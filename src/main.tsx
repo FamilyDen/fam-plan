@@ -4,7 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import {ClerkProvider} from "@clerk/clerk-react";
 
-const PUBLISHABLE_KEY = import.meta.env.MODE !== 'production' ?
+const PUBLISHABLE_KEY = import.meta.env.MODE == 'production' ?
     import.meta.env.VITE_CLERK_PUBLISHABLE_PRODUCTION_KEY :
     import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
