@@ -1,12 +1,10 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { OrganizationSwitcher, SignedIn, SignedOut, SignInButton, UserButton, useClerk } from "@clerk/clerk-react";
-import StartKioskButton from "./StartKioskButton.tsx";
+import { OrganizationSwitcher, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 import { useIsFamilyAdmin, useIsKiosk } from "../lib/kiosk.ts";
 
 function Layout() {
   const isKiosk = useIsKiosk()
   const isFamilyAdmin = useIsFamilyAdmin()
-  const { signOut } = useClerk()
 
   return (
       <>
@@ -16,11 +14,11 @@ function Layout() {
                   <SignedIn>
                       <NavLink to="/dashboard">Dashboard</NavLink>
                       {isKiosk ? (
-                          // The kiosk gets no account or family menus; a parent signs in to take over.
-                          <button onClick={() => signOut({ redirectUrl: "/dashboard" })}>Parent sign-in</button>
+                          // The kiosk gets no account or family menus; a parent unlocks with their PIN to take over.
+                          <NavLink to="/kiosk/unlock">Parent</NavLink>
                       ) : (
                           <>
-                              {isFamilyAdmin && <StartKioskButton />}
+                              {isFamilyAdmin && <NavLink to="/kiosk" end>Kiosk</NavLink>}
                               <OrganizationSwitcher
                                   hidePersonal
                                   afterCreateOrganizationUrl="/dashboard"
