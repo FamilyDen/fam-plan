@@ -1,5 +1,6 @@
--- Families are Clerk Organizations. Parents sign in with Clerk and are members of the organization;
--- the shared touch screen stays signed in as a parent, so kids use the app without their own login.
+-- Families are Clerk Organizations. Parents sign in with Clerk and are admins of the organization.
+-- The shared touch screen runs as the family's kiosk account (a plain member), so kids use the app
+-- without their own login.
 -- Everyone in the family (kids and parents) is a row in family_members.
 --
 -- Every row belongs to one family (the Clerk org id), and users can only read or change rows
@@ -13,6 +14,18 @@ stable
 set search_path = ''
 as $$
   select coalesce(auth.jwt() -> 'o' ->> 'id', auth.jwt() ->> 'org_id')
+$$;
+
+-- True when the user is an admin (a parent) of the active family. The shared touch screen's
+-- kiosk account is a plain member, so it can use the app but not manage the family.
+-- Token v2 has "o": {"rol": "admin"}; v1 had "org_role": "org:admin".
+create or replace function public.is_family_admin()
+returns boolean
+language sql
+stable
+set search_path = ''
+as $$
+  select coalesce(auth.jwt() -> 'o' ->> 'rol', auth.jwt() ->> 'org_role') in ('admin', 'org:admin')
 $$;
 
 create table public.family_members (
@@ -63,21 +76,22 @@ alter table public.todos enable row level security;
 alter table public.events enable row level security;
 alter table public.event_members enable row level security;
 
--- family_members, todos and events: full access to rows of the active family.
+-- family_members: everyone in the family can see members; only admins can manage them.
 create policy "Family can read members" on public.family_members
   for select to authenticated
   using (family_id = (select public.current_family_id()));
-create policy "Family can add members" on public.family_members
+create policy "Admins can add members" on public.family_members
   for insert to authenticated
-  with check (family_id = (select public.current_family_id()));
-create policy "Family can update members" on public.family_members
+  with check (family_id = (select public.current_family_id()) and (select public.is_family_admin()));
+create policy "Admins can update members" on public.family_members
   for update to authenticated
-  using (family_id = (select public.current_family_id()))
-  with check (family_id = (select public.current_family_id()));
-create policy "Family can delete members" on public.family_members
+  using (family_id = (select public.current_family_id()) and (select public.is_family_admin()))
+  with check (family_id = (select public.current_family_id()) and (select public.is_family_admin()));
+create policy "Admins can delete members" on public.family_members
   for delete to authenticated
-  using (family_id = (select public.current_family_id()));
+  using (family_id = (select public.current_family_id()) and (select public.is_family_admin()));
 
+-- todos and events: everyone in the family, including the kiosk, has full access.
 create policy "Family can read todos" on public.todos
   for select to authenticated
   using (family_id = (select public.current_family_id()));

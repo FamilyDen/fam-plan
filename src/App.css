@@ -96,3 +96,8 @@ button.primary {
 .create-family {
   margin-top: 2rem;
 }
+
+.error {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+}
