@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { OrganizationSwitcher, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 function Layout() {
 
@@ -10,6 +10,19 @@ function Layout() {
               <nav>
                   <SignedIn>
                       <NavLink to="/dashboard">Dashboard</NavLink>
+                      <OrganizationSwitcher
+                          hidePersonal
+                          afterCreateOrganizationUrl="/dashboard"
+                          afterSelectOrganizationUrl="/dashboard"
+                          // Clerk's default dark text is unreadable on the dark header; follow the page text color instead.
+                          appearance={{
+                              elements: {
+                                  organizationSwitcherTrigger: { color: "inherit" },
+                                  organizationSwitcherTriggerIcon: { color: "inherit" },
+                                  organizationPreviewMainIdentifier: { color: "inherit" },
+                              },
+                          }}
+                      />
                       <UserButton />
                   </SignedIn>
                   <SignedOut>

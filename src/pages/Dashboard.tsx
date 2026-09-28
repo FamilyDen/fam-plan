@@ -1,13 +1,31 @@
-import { useUser } from "@clerk/clerk-react";
+import { CreateOrganization, useOrganization, useUser } from "@clerk/clerk-react";
 
 function Dashboard() {
   const { user } = useUser()
+  const { isLoaded, organization } = useOrganization()
   const name = user?.firstName ?? user?.username ?? "there"
+
+  if (!isLoaded) {
+    return null
+  }
+
+  // Every family's data is scoped to a Clerk organization, so one must be active.
+  if (!organization) {
+    return (
+        <div className="dashboard">
+            <h1>Hi {name} 👋</h1>
+            <p className="muted">Create your family to start planning together, or pick one from the menu above.</p>
+            <div className="create-family">
+                <CreateOrganization afterCreateOrganizationUrl="/dashboard" skipInvitationScreen={false} />
+            </div>
+        </div>
+    )
+  }
 
   return (
       <div className="dashboard">
           <h1>Hi {name} 👋</h1>
-          <p className="muted">Here's what's happening in your family.</p>
+          <p className="muted">Here's what's happening in {organization.name}.</p>
 
           <div className="cards">
               <section className="card">
