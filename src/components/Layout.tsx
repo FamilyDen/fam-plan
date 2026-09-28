@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { OrganizationSwitcher, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 function Layout() {
 
@@ -10,7 +10,6 @@ function Layout() {
               <nav>
                   <SignedIn>
                       <NavLink to="/dashboard">Dashboard</NavLink>
-                      <OrganizationSwitcher hidePersonal afterCreateOrganizationUrl="/dashboard" afterSelectOrganizationUrl="/dashboard" />
                       <UserButton />
                   </SignedIn>
                   <SignedOut>
