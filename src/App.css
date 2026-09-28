@@ -92,3 +92,7 @@ button.primary {
   height: 28px;
   border-radius: 50%;
 }
+
+.create-family {
+  margin-top: 2rem;
+}
