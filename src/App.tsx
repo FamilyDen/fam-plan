@@ -1,20 +1,28 @@
 import './App.css'
 
-import { SignedIn, SignedOut, SignInButton, UserButton} from "@clerk/clerk-react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout.tsx";
+import RequireAuth from "./components/RequireAuth.tsx";
+import Home from "./pages/Home.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 
 function App() {
 
   return (
-      <>
-          <header>
-              <SignedOut>
-                  <SignInButton />
-              </SignedOut>
-              <SignedIn>
-                  <UserButton />
-              </SignedIn>
-          </header>
-      </>
+      <Routes>
+          <Route element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route
+                  path="dashboard"
+                  element={
+                      <RequireAuth>
+                          <Dashboard />
+                      </RequireAuth>
+                  }
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+      </Routes>
   )
 }
 
