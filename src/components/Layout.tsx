@@ -1,7 +1,10 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { OrganizationSwitcher, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { useIsFamilyAdmin, useIsKiosk } from "../lib/kiosk.ts";
 
 function Layout() {
+  const isKiosk = useIsKiosk()
+  const isFamilyAdmin = useIsFamilyAdmin()
 
   return (
       <>
@@ -10,7 +13,28 @@ function Layout() {
               <nav>
                   <SignedIn>
                       <NavLink to="/dashboard">Dashboard</NavLink>
-                      <UserButton />
+                      {isKiosk ? (
+                          // The kiosk gets no account or family menus; a parent unlocks with their PIN to take over.
+                          <NavLink to="/kiosk/unlock">Parent</NavLink>
+                      ) : (
+                          <>
+                              {isFamilyAdmin && <NavLink to="/kiosk" end>Kiosk</NavLink>}
+                              <OrganizationSwitcher
+                                  hidePersonal
+                                  afterCreateOrganizationUrl="/dashboard"
+                                  afterSelectOrganizationUrl="/dashboard"
+                                  // Clerk's default dark text is unreadable on the dark header; follow the page text color instead.
+                                  appearance={{
+                                      elements: {
+                                          organizationSwitcherTrigger: { color: "inherit" },
+                                          organizationSwitcherTriggerIcon: { color: "inherit" },
+                                          organizationPreviewMainIdentifier: { color: "inherit" },
+                                      },
+                                  }}
+                              />
+                              <UserButton />
+                          </>
+                      )}
                   </SignedIn>
                   <SignedOut>
                       <SignInButton />
