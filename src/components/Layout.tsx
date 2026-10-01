@@ -13,6 +13,7 @@ function Layout() {
               <nav>
                   <SignedIn>
                       <NavLink to="/dashboard">Dashboard</NavLink>
+                      <NavLink to="/family">Family</NavLink>
                       {isKiosk ? (
                           // The kiosk gets no account or family menus; a parent unlocks with their PIN to take over.
                           <NavLink to="/kiosk/unlock">Parent</NavLink>
