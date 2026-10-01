@@ -179,3 +179,332 @@ button.primary {
   gap: 1.5rem;
   margin-top: 2rem;
 }
+
+.members {
+  margin-bottom: 0.75rem;
+}
+
+.members li + li {
+  margin-top: 0.4rem;
+}
+
+.member-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+}
+
+.family-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.family-list > li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.family-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.family-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.member-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.member-form-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.member-form input,
+.member-form select {
+  padding: 0.6em 0.8em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.member-form input {
+  flex: 1;
+  min-width: 10rem;
+}
+
+.color-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.color-picker button {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+}
+
+.color-picker button.selected {
+  border-color: currentColor;
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.todo-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.6rem 0.25rem;
+  text-align: left;
+  background: transparent;
+  border-radius: 8px;
+}
+
+.todo-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.todo-title {
+  flex: 1;
+}
+
+.todo-list li.done .todo-title {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.todo-list li.done .todo-check {
+  background-color: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+}
+
+.link-button {
+  padding: 0.25rem 0;
+  background: transparent;
+  color: #646cff;
+  font-size: 0.9rem;
+}
+
+.todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.todo-form input {
+  padding: 0.6em 0.8em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.todo-assignees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.todo-assignees button {
+  padding: 2px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: transparent;
+  opacity: 0.55;
+}
+
+.todo-assignees button.selected {
+  border-color: currentColor;
+  opacity: 1;
+}
+
+.todo-form button.primary {
+  align-self: flex-start;
+}
+
+.week-day + .week-day {
+  margin-top: 0.75rem;
+}
+
+.week-day h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+
+.week-day ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.week-event {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.25rem;
+  text-align: left;
+  background: transparent;
+  border-radius: 8px;
+}
+
+/* Read-only for the kiosk and non-admins: no button look, but full contrast. */
+.week-event:disabled {
+  cursor: default;
+  color: inherit;
+  border-color: transparent;
+}
+
+.week-time {
+  flex-shrink: 0;
+  min-width: 5.5rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.week-title {
+  flex: 1;
+}
+
+.week-members {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.week-card > button.primary {
+  margin-top: 1rem;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 32rem;
+  max-height: 100%;
+  overflow-y: auto;
+  background-color: #242424;
+}
+
+.event-form input[type="text"],
+.event-form input:not([type]),
+.event-form input[type="date"],
+.event-form input[type="time"] {
+  padding: 0.6em 0.8em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.day-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.day-chips button {
+  padding: 0.5em 0.8em;
+}
+
+.day-chips button.selected {
+  background-color: #646cff;
+  color: #fff;
+}
+
+.all-day {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.all-day input {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.event-times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.event-times label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.event-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+button.danger {
+  margin-left: auto;
+  color: #ff6b6b;
+}
+
+@media (prefers-color-scheme: light) {
+  .event-form {
+    background-color: #ffffff;
+  }
+}
