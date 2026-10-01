@@ -50,14 +50,19 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
   }
 
   return (
-      <section className="card week-card">
-          <h2>This week</h2>
+      <section className="panel week-card">
+          <div className="panel-head">
+              <h2>This week</h2>
+              {isFamilyAdmin && !loading && !error && (
+                  <button className="panel-action" onClick={() => { setNotice(null); setEditing("new") }}>+ Add event</button>
+              )}
+          </div>
           {error && <p className="error">{error}</p>}
           {loading && !error && <p className="muted">Loading…</p>}
 
           {!loading && !error && (
               <>
-                  {days.length === 0 && <p className="muted">Nothing planned this week.</p>}
+                  {days.length === 0 && <p className="muted empty-note">Nothing planned this week.</p>}
                   {days.map(({ day, occurrences }) => (
                       <div key={toDateInput(day)} className="week-day">
                           <h3>{dayLabel(day, today)}</h3>
@@ -78,7 +83,7 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
                                           </span>
                                           <span className="week-members">
                                               {occurrence.event.member_ids.map((id) => membersById.get(id)).filter((m) => m !== undefined)
-                                                  .map((member) => <MemberAvatar key={member.id} member={member} size={24} />)}
+                                                  .map((member) => <MemberAvatar key={member.id} member={member} size={26} />)}
                                           </span>
                                       </button>
                                   </li>
@@ -86,7 +91,6 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
                           </ul>
                       </div>
                   ))}
-                  {isFamilyAdmin && <button className="primary" onClick={() => { setNotice(null); setEditing("new") }}>Add event</button>}
               </>
           )}
           {notice && <p className="muted">{notice}</p>}
