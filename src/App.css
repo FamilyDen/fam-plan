@@ -198,62 +198,6 @@ button.primary {
   font-weight: 700;
 }
 
-.family-list {
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0;
-}
-
-.family-list > li {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
-}
-
-.family-name {
-  font-size: 1.15rem;
-  font-weight: 600;
-}
-
-.family-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-
-.member-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-}
-
-.member-form-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.member-form input,
-.member-form select {
-  padding: 0.6em 0.8em;
-  font-size: 1em;
-  font-family: inherit;
-  border-radius: 8px;
-  border: 1px solid rgba(128, 128, 128, 0.4);
-  background: transparent;
-  color: inherit;
-}
-
-.member-form input {
-  flex: 1;
-  min-width: 10rem;
-}
-
 .color-picker {
   display: flex;
   flex-wrap: wrap;
@@ -878,4 +822,142 @@ button.primary {
 .night-hint {
   font-size: 1rem;
   opacity: 0.6;
+}
+
+/* ---- Family page: member tiles that expand in place ---- */
+
+.family-header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.family-header p {
+  margin: 0.25rem 0 0;
+}
+
+.family-group {
+  margin-top: 1.75rem;
+}
+
+.family-group h2 {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.member-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.1rem 0.5rem 1rem;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 14px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+button.member-tile:hover {
+  border-color: #646cff;
+}
+
+.member-tile-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.member-tile-edit {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.65rem;
+  font-size: 0.9rem;
+  opacity: 0.45;
+}
+
+.member-tile-add {
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+.member-tile-add .member-tile-name {
+  font-weight: 500;
+}
+
+.member-tile-plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 1.5px dashed currentColor;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  font-weight: 300;
+}
+
+/* The expanded card takes the whole row of the grid. */
+.member-editor {
+  grid-column: 1 / -1;
+  border: 1px solid #646cff;
+  border-radius: 14px;
+  animation: member-expand 0.15s ease-out;
+}
+
+@keyframes member-expand {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.member-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.member-editor-head input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.2rem 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.member-editor-fields {
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  padding: 1rem 1.25rem;
+}
+
+.member-editor-fields .segmented {
+  justify-self: start;
+}
+
+.member-editor-error {
+  margin: 0;
+  padding: 0 1.25rem 0.75rem;
+}
+
+.member-editor .event-sheet-footer {
+  padding: 0.85rem 1.25rem;
+}
+
+@media (max-width: 560px) {
+  .member-editor-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

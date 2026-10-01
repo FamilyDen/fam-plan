@@ -2,18 +2,26 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useOrganization } from "@clerk/clerk-react";
 import MemberAvatar from "../components/MemberAvatar.tsx";
-import MemberForm from "../components/MemberForm.tsx";
-import { useFamilyMembers } from "../lib/familyMembers.ts";
+import MemberEditor from "../components/MemberEditor.tsx";
+import { MEMBER_COLORS, useFamilyMembers, type FamilyMember, type FamilyRole } from "../lib/familyMembers.ts";
 import { useIsFamilyAdmin } from "../lib/kiosk.ts";
 
-// Everyone in the family, kids included. Family admins (parents) can add, edit and remove members;
-// everyone else, including the kiosk, sees the list only.
+// Which card is expanded: a member's id, or a new member of a role ("new:parent" / "new:child").
+type Expanded = string | `new:${FamilyRole}` | null
+
+const GROUPS: { role: FamilyRole, title: string, addLabel: string }[] = [
+  { role: "parent", title: "Parents", addLabel: "Add parent" },
+  { role: "child", title: "Children", addLabel: "Add child" },
+]
+
+// Everyone in the family, kids included, as tiles grouped into parents and children.
+// Family admins (parents) tap a tile to expand it in place and edit or remove that member, or tap
+// "Add parent" / "Add child"; everyone else, including the kiosk, sees the tiles read-only.
 function Family() {
   const { isLoaded, organization } = useOrganization()
   const isFamilyAdmin = useIsFamilyAdmin()
   const { members, loading, error, add, update, remove } = useFamilyMembers()
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [removeError, setRemoveError] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState<Expanded>(null)
 
   if (!isLoaded) {
     return null
@@ -22,66 +30,76 @@ function Family() {
     return <Navigate to="/dashboard" replace />
   }
 
-  async function confirmRemove(id: string, name: string) {
-    if (!window.confirm(`Remove ${name} from the family? Their to-dos will become unassigned.`)) {
-      return
+  function tile(member: FamilyMember) {
+    if (expanded === member.id) {
+      return (
+          <MemberEditor
+              key={member.id}
+              initial={member}
+              isNew={false}
+              onSave={(input) => update(member.id, input)}
+              onRemove={() => remove(member.id)}
+              onClose={() => setExpanded(null)}
+          />
+      )
     }
-    setRemoveError(await remove(id))
+    const content = (
+        <>
+            <MemberAvatar member={member} size={56} />
+            <span className="member-tile-name">{member.name}</span>
+        </>
+    )
+    return isFamilyAdmin ? (
+        <button key={member.id} className="member-tile" onClick={() => setExpanded(member.id)} aria-label={`Edit ${member.name}`}>
+            <span className="member-tile-edit" aria-hidden>✎</span>
+            {content}
+        </button>
+    ) : (
+        <div key={member.id} className="member-tile">{content}</div>
+    )
   }
 
   return (
       <div className="family">
-          <h1>{organization.name}</h1>
-          <p className="muted">Everyone in the family. Kids don't need their own login.</p>
+          <header className="family-header">
+              <h1>Family</h1>
+              <p className="muted">
+                  {organization.name}
+                  {!loading && !error && ` · ${members.length} ${members.length === 1 ? "member" : "members"}`}
+              </p>
+          </header>
 
           {error && <p className="error">{error}</p>}
           {loading && !error && <p className="muted">Loading…</p>}
 
-          {!loading && !error && (
-              <ul className="family-list">
-                  {members.length === 0 && (
-                      <li className="muted">No family members yet.{isFamilyAdmin && " Add the first one below."}</li>
-                  )}
-                  {members.map((member) => (
-                      <li key={member.id}>
-                          {editingId === member.id ? (
-                              <MemberForm
-                                  initial={member}
-                                  submitLabel="Save"
-                                  onSubmit={async (input) => {
-                                    const failure = await update(member.id, input)
-                                    if (!failure) {
-                                      setEditingId(null)
-                                    }
-                                    return failure
-                                  }}
-                                  onCancel={() => setEditingId(null)}
-                              />
-                          ) : (
-                              <>
-                                  <MemberAvatar member={member} size={48} />
-                                  <span className="family-name">{member.name}</span>
-                                  <span className="muted">{member.role === "parent" ? "Parent" : "Child"}</span>
-                                  {isFamilyAdmin && (
-                                      <span className="family-actions">
-                                          <button onClick={() => setEditingId(member.id)}>Edit</button>
-                                          <button onClick={() => confirmRemove(member.id, member.name)}>Remove</button>
-                                      </span>
-                                  )}
-                              </>
-                          )}
-                      </li>
-                  ))}
-              </ul>
-          )}
-          {removeError && <p className="error">{removeError}</p>}
-
-          {isFamilyAdmin && !error && (
-              <section className="card">
-                  <h2>Add a family member</h2>
-                  <MemberForm submitLabel="Add" onSubmit={add} />
-              </section>
-          )}
+          {!loading && !error && GROUPS.map(({ role, title, addLabel }) => {
+            const group = members.filter((m) => m.role === role)
+            if (group.length === 0 && !isFamilyAdmin) {
+              return null
+            }
+            return (
+                <section key={role} className="family-group">
+                    <h2>{title}</h2>
+                    <div className="member-grid">
+                        {group.map(tile)}
+                        {isFamilyAdmin && (expanded === `new:${role}` ? (
+                            <MemberEditor
+                                // Start with a color nobody in the family uses yet.
+                                initial={{ name: "", role, color: MEMBER_COLORS.find((c) => !members.some((m) => m.color === c)) ?? MEMBER_COLORS[0] }}
+                                isNew
+                                onSave={add}
+                                onClose={() => setExpanded(null)}
+                            />
+                        ) : (
+                            <button className="member-tile member-tile-add" onClick={() => setExpanded(`new:${role}`)}>
+                                <span className="member-tile-plus" aria-hidden>+</span>
+                                <span className="member-tile-name">{addLabel}</span>
+                            </button>
+                        ))}
+                    </div>
+                </section>
+            )
+          })}
       </div>
   )
 }
