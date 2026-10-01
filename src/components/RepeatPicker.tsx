@@ -1,7 +1,8 @@
-import { describeRepeat, isLastWeekOfMonth, NO_REPEAT, weekOfMonth, type RepeatRule } from "../lib/recurrence.ts";
+import { useState } from "react";
+import { ALL_DAYS, describeRepeat, isLastWeekOfMonth, NO_REPEAT, weekOfMonth, weeklyPreset, WORKWEEK, type RepeatRule } from "../lib/recurrence.ts";
 
 // Monday first, as on Danish calendars.
-const WEEKDAYS = [1, 2, 3, 4, 5, 6, 0]
+const WEEKDAYS = ALL_DAYS
 const WEEK_INTERVALS = [1, 2, 3, 4]
 const MONTH_INTERVALS = [1, 2, 3, 6, 12]
 
@@ -13,13 +14,26 @@ function optionsFor(day: Date): Option[] {
   const describe = (rule: RepeatRule) => describeRepeat({ ...rule, repeat_interval: 1, repeat_until: null }, day)
   const options: Option[] = [
     { value: "none", label: "Doesn't repeat", rule: () => NO_REPEAT },
+    // Daily and weekdays are stored as weekly rules every week.
+    {
+      value: "daily",
+      label: "Daily",
+      rule: (current) => ({ ...current, repeat: "weekly", repeat_weekdays: ALL_DAYS, repeat_interval: 1 }),
+    },
+    {
+      value: "weekdays",
+      label: "Every weekday (Mon–Fri)",
+      rule: (current) => ({ ...current, repeat: "weekly", repeat_weekdays: WORKWEEK, repeat_interval: 1 }),
+    },
     {
       value: "weekly",
       label: "Weekly",
       rule: (current) => ({
         ...current,
         repeat: "weekly",
-        repeat_weekdays: current.repeat === "weekly" && current.repeat_weekdays?.length ? current.repeat_weekdays : [day.getDay()],
+        repeat_weekdays: current.repeat === "weekly" && weeklyPreset(current) === "weekly" && current.repeat_weekdays?.length
+            ? current.repeat_weekdays
+            : [day.getDay()],
       }),
     },
     {
@@ -41,6 +55,9 @@ function optionsFor(day: Date): Option[] {
 }
 
 function valueOf(rule: RepeatRule) {
+  if (rule.repeat === "weekly") {
+    return weeklyPreset(rule)
+  }
   return rule.repeat === "monthly_weekday" ? `monthly_weekday:${rule.repeat_week}` : rule.repeat ?? "none"
 }
 
@@ -52,9 +69,19 @@ type RepeatPickerProps = {
 
 function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
   const options = optionsFor(day)
+  // The chosen menu option, kept separately so that ticking Mon–Fri in "Weekly" doesn't flip the menu
+  // to "Every weekday" mid-tap. Derived from the saved rule when the form opens.
+  const [choice, setChoice] = useState(() => valueOf(value))
+  const selected = value.repeat ? choice : "none"
   const weekly = value.repeat === "weekly"
+  const preset = selected === "daily" || selected === "weekdays"
   const intervals = weekly ? WEEK_INTERVALS : MONTH_INTERVALS
   const unit = weekly ? "week" : "month"
+
+  function choose(optionValue: string) {
+    setChoice(optionValue)
+    onChange(options.find((o) => o.value === optionValue)!.rule(value))
+  }
 
   function toggleWeekday(weekday: number) {
     const current = value.repeat_weekdays ?? []
@@ -67,14 +94,14 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
           <label className="repeat-row">
               Repeat
               <select
-                  value={valueOf(value)}
-                  onChange={(e) => onChange(options.find((o) => o.value === e.target.value)!.rule(value))}
+                  value={options.some((o) => o.value === selected) ? selected : valueOf(value)}
+                  onChange={(e) => choose(e.target.value)}
               >
                   {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
           </label>
 
-          {weekly && (
+          {weekly && !preset && (
               <div className="day-chips" role="group" aria-label="On these days">
                   {WEEKDAYS.map((weekday) => (
                       <button
@@ -92,13 +119,13 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
 
           {value.repeat && (
               <div className="repeat-row">
-                  <select
+                  {!preset && <select
                       value={value.repeat_interval}
                       onChange={(e) => onChange({ ...value, repeat_interval: Number(e.target.value) })}
                       aria-label="How often"
                   >
                       {intervals.map((n) => <option key={n} value={n}>{n === 1 ? `Every ${unit}` : `Every ${n} ${unit}s`}</option>)}
-                  </select>
+                  </select>}
                   <label className="repeat-row">
                       Until
                       <input

@@ -102,6 +102,30 @@ export function occurrencesIn(event: Repeatable, from: Date, days: number, skipD
   return result
 }
 
+// Daily and "every weekday" are weekly rules on all 7 days / Monday–Friday.
+export const ALL_DAYS = [1, 2, 3, 4, 5, 6, 0]
+export const WORKWEEK = [1, 2, 3, 4, 5]
+
+function sameDays(days: number[], expected: number[]) {
+  return days.length === expected.length && expected.every((d) => days.includes(d))
+}
+
+function isWorkweek(days: number[]) {
+  return sameDays(days, WORKWEEK)
+}
+
+// Which repeat preset a weekly rule matches: "daily", "weekdays", or plain "weekly".
+export function weeklyPreset(rule: RepeatRule): "daily" | "weekdays" | "weekly" {
+  const days = rule.repeat_weekdays ?? []
+  if (rule.repeat_interval === 1 && sameDays(days, ALL_DAYS)) {
+    return "daily"
+  }
+  if (rule.repeat_interval === 1 && isWorkweek(days)) {
+    return "weekdays"
+  }
+  return "weekly"
+}
+
 const ORDINALS: Record<number, string> = { 1: "first", 2: "second", 3: "third", 4: "fourth", [-1]: "last" }
 
 function dayOfMonthLabel(n: number) {
@@ -123,8 +147,10 @@ export function describeRepeat(rule: RepeatRule, firstStart: Date) {
   let text: string
   if (rule.repeat === "weekly") {
     const days = [...(rule.repeat_weekdays ?? [])].sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7)) // Monday first
-    const names = days.length === 7 ? "day" : days.map((d) => weekdayName(d, "short")).join(", ")
-    text = n === 1 ? `Every ${names}` : `Every ${n} weeks on ${names}`
+    const names = days.length === 7 ? "day"
+        : isWorkweek(days) ? "weekday"
+        : days.map((d) => weekdayName(d, "short")).join(", ")
+    text = n === 1 ? `Every ${names}` : `Every ${n} weeks on ${days.length === 7 ? "all days" : isWorkweek(days) ? "weekdays" : names}`
   } else {
     const on = rule.repeat === "monthly_date"
         ? `the ${dayOfMonthLabel(firstStart.getDate())}`
