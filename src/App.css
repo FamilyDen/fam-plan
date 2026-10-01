@@ -362,3 +362,149 @@ button.primary {
 .todo-form button.primary {
   align-self: flex-start;
 }
+
+.week-day + .week-day {
+  margin-top: 0.75rem;
+}
+
+.week-day h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+
+.week-day ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.week-event {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.25rem;
+  text-align: left;
+  background: transparent;
+  border-radius: 8px;
+}
+
+/* Read-only for the kiosk and non-admins: no button look, but full contrast. */
+.week-event:disabled {
+  cursor: default;
+  color: inherit;
+  border-color: transparent;
+}
+
+.week-time {
+  flex-shrink: 0;
+  min-width: 5.5rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.week-title {
+  flex: 1;
+}
+
+.week-members {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.week-card > button.primary {
+  margin-top: 1rem;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 32rem;
+  max-height: 100%;
+  overflow-y: auto;
+  background-color: #242424;
+}
+
+.event-form input[type="text"],
+.event-form input:not([type]),
+.event-form input[type="date"],
+.event-form input[type="time"] {
+  padding: 0.6em 0.8em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.day-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.day-chips button {
+  padding: 0.5em 0.8em;
+}
+
+.day-chips button.selected {
+  background-color: #646cff;
+  color: #fff;
+}
+
+.all-day {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.all-day input {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.event-times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.event-times label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.event-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+button.danger {
+  margin-left: auto;
+  color: #ff6b6b;
+}
+
+@media (prefers-color-scheme: light) {
+  .event-form {
+    background-color: #ffffff;
+  }
+}
