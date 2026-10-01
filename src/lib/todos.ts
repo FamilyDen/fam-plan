@@ -80,8 +80,9 @@ export function useTodos() {
     return null
   }, [supabase])
 
-  const clearDone = useCallback(async () => {
-    const doneIds = todos.filter((t) => t.done).map((t) => t.id)
+  // Deletes the done to-dos, or only those among `ids` (e.g. the ones visible under a filter).
+  const clearDone = useCallback(async (ids?: string[]) => {
+    const doneIds = todos.filter((t) => t.done && (!ids || ids.includes(t.id))).map((t) => t.id)
     if (doneIds.length === 0) {
       return null
     }

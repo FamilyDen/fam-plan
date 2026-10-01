@@ -4,17 +4,28 @@ import type { FamilyMember } from "../lib/familyMembers.ts";
 import { useTodos } from "../lib/todos.ts";
 
 // Family to-dos on the dashboard: add one at the top (optionally for a family member, picked once you
-// start typing), tap a row to tick it off, and clear the done ones. Works the same for parents and the kiosk.
+// start typing), tap a row to tick it off, and clear the done ones. A row of avatars filters the list to
+// one person, e.g. a child checking their own chores on the kiosk. Works the same for parents and the kiosk.
 function TodosCard({ members }: { members: FamilyMember[] }) {
   const { todos, loading, error, add, setDone, clearDone } = useTodos()
   const [title, setTitle] = useState("")
   const [assignedTo, setAssignedTo] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [filter, setFilter] = useState<string | null>(null) // a member id, or null for everyone
 
   const membersById = new Map(members.map((m) => [m.id, m]))
-  const open = todos.filter((t) => !t.done)
-  const done = todos.filter((t) => t.done)
+  // A filter on someone who has since been removed from the family falls back to everyone.
+  const activeFilter = filter && membersById.has(filter) ? filter : null
+  const visible = activeFilter ? todos.filter((t) => t.assigned_to === activeFilter) : todos
+  const open = visible.filter((t) => !t.done)
+  const done = visible.filter((t) => t.done)
+
+  function changeFilter(memberId: string | null) {
+    setFilter(memberId)
+    // New to-dos go to the person being looked at, unless another one is picked.
+    setAssignedTo(memberId)
+  }
 
   async function submit(event: FormEvent) {
     event.preventDefault()
@@ -27,7 +38,7 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
     setMessage(failure)
     if (!failure) {
       setTitle("")
-      setAssignedTo(null)
+      setAssignedTo(activeFilter)
     }
   }
 
@@ -47,6 +58,34 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
 
           {!loading && !error && (
               <>
+                  {members.length > 0 && (
+                      <div className="todo-filter" role="radiogroup" aria-label="Show to-dos for">
+                          <button
+                              type="button"
+                              role="radio"
+                              aria-checked={activeFilter === null}
+                              className={`todo-filter-all${activeFilter === null ? " selected" : ""}`}
+                              onClick={() => changeFilter(null)}
+                          >
+                              All
+                          </button>
+                          {members.map((member) => (
+                              <button
+                                  key={member.id}
+                                  type="button"
+                                  role="radio"
+                                  aria-checked={activeFilter === member.id}
+                                  aria-label={member.name}
+                                  title={member.name}
+                                  className={activeFilter === member.id ? "selected" : ""}
+                                  onClick={() => changeFilter(activeFilter === member.id ? null : member.id)}
+                              >
+                                  <MemberAvatar member={member} size={30} />
+                              </button>
+                          ))}
+                      </div>
+                  )}
+
                   <form className="todo-add" onSubmit={submit}>
                       <div className="todo-add-row">
                           <input
@@ -79,7 +118,11 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
                       )}
                   </form>
 
-                  {todos.length === 0 && <p className="muted empty-note">Nothing on the list.</p>}
+                  {visible.length === 0 && (
+                      <p className="muted empty-note">
+                          {activeFilter ? `Nothing on ${membersById.get(activeFilter)!.name}'s list.` : "Nothing on the list."}
+                      </p>
+                  )}
                   <ul className="todo-list">
                       {[...open, ...done].map((todo) => {
                         const member = todo.assigned_to ? membersById.get(todo.assigned_to) : undefined
@@ -100,7 +143,7 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
                       })}
                   </ul>
                   {done.length > 0 && (
-                      <button className="link-button" onClick={async () => setMessage(await clearDone())}>
+                      <button className="link-button" onClick={async () => setMessage(await clearDone(visible.map((t) => t.id)))}>
                           Clear {done.length} done
                       </button>
                   )}

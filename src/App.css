@@ -1014,3 +1014,38 @@ button.week-event:not(:disabled):hover {
     box-shadow: 0 0 0 2px #ffffff;
   }
 }
+
+.todo-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+
+.todo-filter button {
+  padding: 2px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: inherit;
+  opacity: 0.5;
+}
+
+.todo-filter button.selected {
+  border-color: #646cff;
+  opacity: 1;
+}
+
+.todo-filter .todo-filter-all {
+  padding: 0.3em 0.9em;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.todo-filter .todo-filter-all.selected {
+  border-color: #646cff;
+  background-color: rgba(100, 108, 255, 0.2);
+  opacity: 1;
+}
