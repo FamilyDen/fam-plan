@@ -430,30 +430,6 @@ button.primary {
   background: rgba(0, 0, 0, 0.55);
 }
 
-.event-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-  max-width: 32rem;
-  max-height: 100%;
-  overflow-y: auto;
-  background-color: #242424;
-}
-
-.event-form input[type="text"],
-.event-form input:not([type]),
-.event-form input[type="date"],
-.event-form input[type="time"] {
-  padding: 0.6em 0.8em;
-  font-size: 1em;
-  font-family: inherit;
-  border-radius: 8px;
-  border: 1px solid rgba(128, 128, 128, 0.4);
-  background: transparent;
-  color: inherit;
-}
-
 .day-chips {
   display: flex;
   flex-wrap: wrap;
@@ -469,42 +445,437 @@ button.primary {
   color: #fff;
 }
 
-.all-day {
+
+.week-repeat {
+  opacity: 0.6;
+}
+
+.repeat-picker select option {
+  color: #213547;
+}
+
+.occurrence-menu {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 22rem;
+  background-color: #242424;
 }
 
-.all-day input {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.event-times {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.event-times label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.event-form-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-button.danger {
-  margin-left: auto;
-  color: #ff6b6b;
+.occurrence-menu h2,
+.occurrence-menu p {
+  margin: 0;
 }
 
 @media (prefers-color-scheme: light) {
-  .event-form {
+  .occurrence-menu {
     background-color: #ffffff;
   }
+}
+
+/* ---- Event sheet (add/edit event) ---- */
+
+.event-sheet {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 36rem;
+  max-height: 100%;
+  overflow-y: auto;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 16px;
+  background-color: #242424;
+}
+
+.event-sheet-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem 0.25rem;
+  font-size: 0.85rem;
+}
+
+.icon-button {
+  display: inline-flex;
+  padding: 0.35rem;
+  background: transparent;
+  border-color: transparent;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.event-sheet-title {
+  padding: 0 1.5rem 0.75rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.event-sheet-title input {
+  width: 100%;
+  padding: 0.25rem 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.event-sheet-title p {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+}
+
+.event-fields {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 1.1rem 0.75rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+.field-label-top {
+  align-self: start;
+  padding-top: 0.6rem;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.event-sheet input[type="time"],
+.event-sheet input[type="date"],
+.event-sheet select {
+  padding: 0.5em 0.7em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.event-sheet select option {
+  color: #213547;
+}
+
+.day-strip {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.day-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  min-width: 0;
+  padding: 0.4rem 0;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+}
+
+.day-tile-name {
+  font-size: 0.7rem;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.day-tile-number {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.day-tile.selected {
+  border-color: #646cff;
+  background-color: #646cff;
+  color: #fff;
+}
+
+.day-tile.selected .day-tile-name {
+  opacity: 0.9;
+}
+
+.day-tile-other:not(.selected) {
+  border-style: dashed;
+}
+
+/* The native date picker behind the "Other" tile: opened from the tile, never shown itself. */
+.visually-hidden-input {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.segmented button {
+  padding: 0.5em 0.9em;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.segmented button + button {
+  border-left: 1px solid rgba(128, 128, 128, 0.4);
+}
+
+.segmented button.selected {
+  background-color: rgba(100, 108, 255, 0.2);
+  color: #9aa0ff;
+}
+
+.repeat-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.repeat-summary {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.who-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.who-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 0.8rem;
+}
+
+.who-option .member-avatar {
+  opacity: 0.4;
+  transition: opacity 0.15s;
+}
+
+.who-option span:last-child {
+  opacity: 0.6;
+}
+
+.who-option.selected .member-avatar {
+  opacity: 1;
+  box-shadow: 0 0 0 2px #242424, 0 0 0 4px #646cff;
+}
+
+.who-option.selected span:last-child {
+  opacity: 1;
+}
+
+.event-sheet-error {
+  margin: 0;
+  padding: 0 1.5rem 0.75rem;
+}
+
+.event-sheet-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.text-danger-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-left: 0;
+  border-color: transparent;
+  background: transparent;
+  color: #ff6b6b;
+}
+
+/* Phones: labels above their controls, and the day strip scrolls sideways if it must. */
+@media (max-width: 560px) {
+  .event-fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
+  }
+
+  .field-label-top {
+    padding-top: 0;
+  }
+
+  .event-fields > :not(.field-label) {
+    margin-bottom: 0.8rem;
+  }
+
+  .day-strip {
+    grid-template-columns: repeat(8, 3.4rem);
+    overflow-x: auto;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .event-sheet {
+    background-color: #ffffff;
+  }
+
+  .segmented button.selected {
+    color: #3b43d6;
+  }
+
+  .who-option.selected .member-avatar {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #646cff;
+  }
+}
+
+/* ---- Wall-screen (kiosk) display ---- */
+
+#root:has(.kiosk-display) {
+  max-width: none;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.kiosk-display {
+  font-size: 1.15rem;
+}
+
+.kiosk-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 0 1rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.kiosk-clock {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.kiosk-time {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.kiosk-date {
+  font-size: clamp(1.2rem, 2.2vw, 1.75rem);
+  opacity: 0.8;
+}
+
+.kiosk-header-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.kiosk-family {
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.kiosk-header nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.kiosk-header nav a {
+  padding: 0.4rem 0;
+}
+
+.kiosk-header nav a.active {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+.kiosk-display .cards {
+  margin-top: 0;
+  gap: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .kiosk-display .cards {
+    grid-template-columns: 1.4fr 1fr 1.2fr;
+    align-items: start;
+  }
+}
+
+.kiosk-display .card {
+  padding: 1.5rem;
+}
+
+.kiosk-display .card h2 {
+  font-size: 1.5rem;
+}
+
+.kiosk-display .todo-toggle,
+.kiosk-display .week-event {
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+.night-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  border: none;
+  border-radius: 0;
+  background: #000;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+}
+
+.night-time {
+  font-size: clamp(4rem, 14vw, 10rem);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+
+.night-hint {
+  font-size: 1rem;
+  opacity: 0.6;
 }
