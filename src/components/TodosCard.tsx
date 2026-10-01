@@ -3,8 +3,8 @@ import MemberAvatar from "./MemberAvatar.tsx";
 import type { FamilyMember } from "../lib/familyMembers.ts";
 import { useTodos } from "../lib/todos.ts";
 
-// Family to-dos on the dashboard: add one (optionally for a family member), tap to tick it off,
-// and clear the done ones. Works the same for parents and the kiosk.
+// Family to-dos on the dashboard: add one at the top (optionally for a family member, picked once you
+// start typing), tap a row to tick it off, and clear the done ones. Works the same for parents and the kiosk.
 function TodosCard({ members }: { members: FamilyMember[] }) {
   const { todos, loading, error, add, setDone, clearDone } = useTodos()
   const [title, setTitle] = useState("")
@@ -36,14 +36,50 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
   }
 
   return (
-      <section className="card todos-card">
-          <h2>To-dos</h2>
+      <section className="panel todos-card">
+          <div className="panel-head">
+              <h2>To-dos</h2>
+              {!loading && !error && <span className="muted">{open.length === 0 ? "All done" : `${open.length} open`}</span>}
+          </div>
+
           {error && <p className="error">{error}</p>}
           {loading && !error && <p className="muted">Loading…</p>}
 
           {!loading && !error && (
               <>
-                  {open.length === 0 && <p className="muted">Nothing on the list.</p>}
+                  <form className="todo-add" onSubmit={submit}>
+                      <div className="todo-add-row">
+                          <input
+                              value={title}
+                              onChange={(e) => setTitle(e.target.value)}
+                              placeholder="Add a to-do…"
+                              aria-label="New to-do"
+                              maxLength={120}
+                          />
+                          <button className="primary" type="submit" disabled={saving || !title.trim()} aria-label="Add to-do">+</button>
+                      </div>
+                      {title.trim() && members.length > 0 && (
+                          <div className="todo-assignees" role="radiogroup" aria-label="For">
+                              <span className="muted">For</span>
+                              {members.map((member) => (
+                                  <button
+                                      key={member.id}
+                                      type="button"
+                                      role="radio"
+                                      aria-checked={assignedTo === member.id}
+                                      aria-label={member.name}
+                                      title={member.name}
+                                      className={assignedTo === member.id ? "selected" : ""}
+                                      onClick={() => setAssignedTo(assignedTo === member.id ? null : member.id)}
+                                  >
+                                      <MemberAvatar member={member} size={28} />
+                                  </button>
+                              ))}
+                          </div>
+                      )}
+                  </form>
+
+                  {todos.length === 0 && <p className="muted empty-note">Nothing on the list.</p>}
                   <ul className="todo-list">
                       {[...open, ...done].map((todo) => {
                         const member = todo.assigned_to ? membersById.get(todo.assigned_to) : undefined
@@ -68,35 +104,6 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
                           Clear {done.length} done
                       </button>
                   )}
-
-                  <form className="todo-form" onSubmit={submit}>
-                      <input
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          placeholder="Add a to-do…"
-                          aria-label="New to-do"
-                          maxLength={120}
-                      />
-                      {members.length > 0 && (
-                          <div className="todo-assignees" role="radiogroup" aria-label="For">
-                              {members.map((member) => (
-                                  <button
-                                      key={member.id}
-                                      type="button"
-                                      role="radio"
-                                      aria-checked={assignedTo === member.id}
-                                      aria-label={member.name}
-                                      title={member.name}
-                                      className={assignedTo === member.id ? "selected" : ""}
-                                      onClick={() => setAssignedTo(assignedTo === member.id ? null : member.id)}
-                                  >
-                                      <MemberAvatar member={member} size={32} />
-                                  </button>
-                              ))}
-                          </div>
-                      )}
-                      <button className="primary" type="submit" disabled={saving || !title.trim()}>Add</button>
-                  </form>
               </>
           )}
           {message && <p className="error">{message}</p>}

@@ -1,17 +1,16 @@
-import { Link } from "react-router-dom";
 import { CreateOrganization, useOrganization, useUser } from "@clerk/clerk-react";
-import MemberAvatar from "../components/MemberAvatar.tsx";
 import TodosCard from "../components/TodosCard.tsx";
 import WeekCard from "../components/WeekCard.tsx";
 import { useFamilyMembers } from "../lib/familyMembers.ts";
-import { useIsFamilyAdmin, useIsKiosk } from "../lib/kiosk.ts";
+import { useIsKiosk } from "../lib/kiosk.ts";
 
+// The family's week and to-dos side by side. Family members are managed on the Family page (header link);
+// the cards still use them for avatars and assigning.
 function Dashboard() {
   const { user } = useUser()
   const { isLoaded, organization } = useOrganization()
-  const isFamilyAdmin = useIsFamilyAdmin()
   const isKiosk = useIsKiosk()
-  const { members, loading, error } = useFamilyMembers()
+  const { members } = useFamilyMembers()
   const name = user?.firstName ?? user?.username ?? "there"
 
   if (!isLoaded) {
@@ -35,31 +34,16 @@ function Dashboard() {
       <div className="dashboard">
           {/* On the wall screen the clock header takes the greeting's place. */}
           {!isKiosk && (
-              <>
+              <header className="page-header">
                   <h1>Hi {name} 👋</h1>
-                  <p className="muted">Here's what's happening in {organization.name}.</p>
-              </>
+                  <p className="muted">
+                      {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · {organization.name}
+                  </p>
+              </header>
           )}
 
-          <div className="cards">
+          <div className="dashboard-cards">
               <WeekCard members={members} />
-
-              <section className="card">
-                  <h2>Family members</h2>
-                  {error && <p className="error">{error}</p>}
-                  {loading && !error && <p className="muted">Loading…</p>}
-                  {!loading && !error && members.length === 0 && <p className="muted">No family members yet.</p>}
-                  <ul className="members">
-                      {members.map((member) => (
-                          <li key={member.id}>
-                              <MemberAvatar member={member} size={28} />
-                              <span>{member.name}</span>
-                          </li>
-                      ))}
-                  </ul>
-                  <Link to="/family">{isFamilyAdmin ? "Manage family" : "See everyone"}</Link>
-              </section>
-
               <TodosCard members={members} />
           </div>
       </div>
