@@ -3,6 +3,7 @@ import { OrganizationSwitcher, SignedIn, SignedOut, SignInButton, UserButton } f
 import KioskHeader from "./KioskHeader.tsx";
 import NightScreen from "./NightScreen.tsx";
 import { useNow, useWakeLock } from "../lib/display.ts";
+import { useFamilySettings } from "../lib/familySettings.ts";
 import { useIsFamilyAdmin, useIsKiosk } from "../lib/kiosk.ts";
 
 function Layout() {
@@ -10,7 +11,7 @@ function Layout() {
   const isFamilyAdmin = useIsFamilyAdmin()
   useWakeLock(isKiosk)
 
-  // The family-room wall screen: big clock, no account menus, and night dimming.
+  // The family screen in the family room: big clock, no account menus, and night dimming.
   if (isKiosk) {
     return <KioskDisplay />
   }
@@ -23,7 +24,7 @@ function Layout() {
                   <SignedIn>
                       <NavLink to="/dashboard">Dashboard</NavLink>
                       <NavLink to="/family">Family</NavLink>
-                      {isFamilyAdmin && <NavLink to="/kiosk" end>Kiosk</NavLink>}
+                      {isFamilyAdmin && <NavLink to="/kiosk" end>Family screen</NavLink>}
                       <OrganizationSwitcher
                           hidePersonal
                           afterCreateOrganizationUrl="/dashboard"
@@ -53,6 +54,7 @@ function Layout() {
 
 function KioskDisplay() {
   const now = useNow()
+  const { settings } = useFamilySettings()
 
   return (
       <div className="kiosk-display">
@@ -60,7 +62,7 @@ function KioskDisplay() {
           <main className="site-main">
               <Outlet />
           </main>
-          <NightScreen now={now} />
+          <NightScreen now={now} settings={settings} />
       </div>
   )
 }

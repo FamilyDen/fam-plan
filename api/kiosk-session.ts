@@ -53,7 +53,7 @@ export default {
       return json({ error: "Unauthorized" }, 401)
     }
     if (!isFamilyAdmin(session)) {
-      return json({ error: "Only family admins can start kiosk mode" }, 403)
+      return json({ error: "Only family admins can start the family screen" }, 403)
     }
 
     try {
@@ -69,7 +69,7 @@ export default {
       return json({ ticket: token, familyId: family.id })
     } catch (error) {
       console.error("Failed to create kiosk session", error)
-      return json({ error: "Could not start kiosk mode" }, 500)
+      return json({ error: "Could not start the family screen" }, 500)
     }
   },
 }

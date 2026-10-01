@@ -18,7 +18,7 @@ export default {
       return json({ error: "Unauthorized" }, 401)
     }
     if (!session.orgId || !(await isFamilyKiosk(session))) {
-      return json({ error: "Only the family kiosk can unlock" }, 403)
+      return json({ error: "Only the family screen can unlock" }, 403)
     }
     const familyId = session.orgId
 

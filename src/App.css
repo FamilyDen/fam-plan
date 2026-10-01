@@ -77,7 +77,6 @@ button.primary {
   font-size: 0.9rem;
 }
 
-.kiosk-settings .card,
 .kiosk-unlock {
   margin-top: 1.5rem;
 }
@@ -1052,4 +1051,192 @@ button.week-event:not(:disabled):hover {
   border-color: #646cff;
   background-color: rgba(100, 108, 255, 0.2);
   opacity: 1;
+}
+
+/* ---- Family screen settings page ---- */
+
+.family-screen-page .panel {
+  margin-top: 1.25rem;
+}
+
+.screen-hero {
+  display: grid;
+  grid-template-columns: 12rem minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.screen-hero h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+}
+
+.screen-hero p {
+  margin: 0 0 1rem;
+}
+
+.warning-note {
+  color: #f0b44c;
+  font-size: 0.9rem;
+}
+
+.screen-preview {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 12px;
+}
+
+.screen-preview-time {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.screen-preview-date {
+  margin-bottom: 0.6rem;
+  font-size: 0.7rem;
+  opacity: 0.65;
+}
+
+.screen-preview-cards {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 0.4rem;
+}
+
+.screen-preview-cards span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 3.5rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 6px;
+}
+
+.screen-preview-cards i {
+  height: 0.3rem;
+  border-radius: 2px;
+  background-color: rgba(128, 128, 128, 0.3);
+}
+
+.screen-preview-cards i:first-child {
+  width: 55%;
+  background-color: rgba(128, 128, 128, 0.55);
+}
+
+.screen-preview-cards i:nth-child(3) {
+  width: 70%;
+}
+
+.settings-list {
+  padding: 0;
+  overflow: hidden;
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.settings-row-main {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.4rem;
+}
+
+.settings-row-icon {
+  display: inline-flex;
+  opacity: 0.7;
+}
+
+.settings-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.9rem;
+}
+
+.settings-row-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.settings-row-body {
+  padding: 0 1.4rem 1.2rem 3.7rem;
+  animation: member-expand 0.15s ease-out;
+}
+
+.settings-row-body > div,
+.night-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.settings-row-body p {
+  margin: 0;
+}
+
+.settings-row-body input[type="time"] {
+  padding: 0.5em 0.7em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.settings-row-body .pin-pad {
+  margin: 0;
+}
+
+.install-steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.7;
+}
+
+.badge {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.badge-success {
+  background-color: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+}
+
+.badge-warning {
+  background-color: rgba(240, 180, 76, 0.18);
+  color: #f0b44c;
+}
+
+@media (max-width: 560px) {
+  .screen-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-row-body {
+    padding-left: 1.4rem;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .badge-success {
+    color: #15803d;
+  }
+
+  .badge-warning,
+  .warning-note {
+    color: #a16207;
+  }
 }

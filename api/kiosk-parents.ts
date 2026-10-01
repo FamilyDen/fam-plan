@@ -16,7 +16,7 @@ export default {
       return json({ error: "Unauthorized" }, 401)
     }
     if (!session.orgId || !(await isFamilyKiosk(session))) {
-      return json({ error: "Only the family kiosk can list parents" }, 403)
+      return json({ error: "Only the family screen can list parents" }, 403)
     }
 
     const { data: memberships } = await clerk.organizations.getOrganizationMembershipList({
