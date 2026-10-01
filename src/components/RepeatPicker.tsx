@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toDateInput } from "../lib/dates.ts";
 import { ALL_DAYS, describeRepeat, isLastWeekOfMonth, NO_REPEAT, weekOfMonth, weeklyPreset, WORKWEEK, type RepeatRule } from "../lib/recurrence.ts";
 
 // Monday first, as on Danish calendars.
@@ -91,15 +92,24 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
 
   return (
       <div className="repeat-picker">
-          <label className="repeat-row">
-              Repeat
+          <div className="field-row">
               <select
                   value={options.some((o) => o.value === selected) ? selected : valueOf(value)}
                   onChange={(e) => choose(e.target.value)}
+                  aria-label="Repeat"
               >
                   {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
-          </label>
+              {value.repeat && !preset && (
+                  <select
+                      value={value.repeat_interval}
+                      onChange={(e) => onChange({ ...value, repeat_interval: Number(e.target.value) })}
+                      aria-label="How often"
+                  >
+                      {intervals.map((n) => <option key={n} value={n}>{n === 1 ? `Every ${unit}` : `Every ${n} ${unit}s`}</option>)}
+                  </select>
+              )}
+          </div>
 
           {weekly && !preset && (
               <div className="day-chips" role="group" aria-label="On these days">
@@ -118,32 +128,22 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
           )}
 
           {value.repeat && (
-              <div className="repeat-row">
-                  {!preset && <select
-                      value={value.repeat_interval}
-                      onChange={(e) => onChange({ ...value, repeat_interval: Number(e.target.value) })}
-                      aria-label="How often"
-                  >
-                      {intervals.map((n) => <option key={n} value={n}>{n === 1 ? `Every ${unit}` : `Every ${n} ${unit}s`}</option>)}
-                  </select>}
-                  <label className="repeat-row">
-                      Until
-                      <input
-                          type="date"
-                          value={value.repeat_until ?? ""}
-                          onChange={(e) => onChange({ ...value, repeat_until: e.target.value || null })}
-                          aria-label="Repeat until (optional)"
-                      />
-                  </label>
-                  {value.repeat_until && (
-                      <button type="button" className="link-button" onClick={() => onChange({ ...value, repeat_until: null })}>
-                          No end date
-                      </button>
-                  )}
+              <div className="field-row">
+                  <span className="muted">Until</span>
+                  <input
+                      type="date"
+                      value={value.repeat_until ?? ""}
+                      min={toDateInput(day)}
+                      onChange={(e) => onChange({ ...value, repeat_until: e.target.value || null })}
+                      aria-label="Repeat until (optional)"
+                  />
+                  {value.repeat_until
+                      ? <button type="button" className="link-button" onClick={() => onChange({ ...value, repeat_until: null })}>No end</button>
+                      : <span className="muted">optional</span>}
               </div>
           )}
 
-          {value.repeat && <p className="muted repeat-summary">↻ {describeRepeat(value, day)}</p>}
+          {value.repeat && <p className="muted repeat-summary">{describeRepeat(value, day)}</p>}
       </div>
   )
 }

@@ -1,9 +1,10 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
+import FieldIcon from "./FieldIcon.tsx";
 import MemberAvatar from "./MemberAvatar.tsx";
 import RepeatPicker from "./RepeatPicker.tsx";
 import type { FamilyMember } from "../lib/familyMembers.ts";
 import type { FamilyEvent, FamilyEventInput } from "../lib/events.ts";
-import { addDays, fromInputs, shortDayLabel, startOfDay, toDateInput, toTimeInput } from "../lib/dates.ts";
+import { addDays, fromInputs, startOfDay, toDateInput, toTimeInput } from "../lib/dates.ts";
 import { fitRuleToDay, NO_REPEAT, type RepeatRule } from "../lib/recurrence.ts";
 
 type EventFormProps = {
@@ -15,8 +16,11 @@ type EventFormProps = {
   onClose: () => void
 }
 
-// Add or edit an event in a panel over the dashboard: title, day, time or all day, repeat, and who's taking part.
-// For a repeating event, the day is the series' first day and saving changes the whole series.
+const LOCALE = "en-GB"
+
+// Add or edit an event in a sheet over the dashboard: a title, then Day / Time / Repeat / Who rows,
+// and Delete / Cancel / Save at the bottom. For a repeating event the day is the series' first day,
+// and saving changes the whole series.
 function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps) {
   const today = startOfDay(new Date())
   const start = event ? new Date(event.starts_at) : null
@@ -35,12 +39,26 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
   } : NO_REPEAT)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const otherDayInput = useRef<HTMLInputElement>(null)
 
-  const quickDays = Array.from({ length: 7 }, (_, i) => addDays(today, i))
+  const stripDays = Array.from({ length: 7 }, (_, i) => addDays(today, i))
+  const dayInStrip = stripDays.some((d) => toDateInput(d) === day)
 
   function changeDay(value: string) {
     setDay(value)
     setRule((current) => fitRuleToDay(current, fromInputs(value)))
+  }
+
+  function pickOtherDay() {
+    const input = otherDayInput.current
+    if (!input) {
+      return
+    }
+    try {
+      input.showPicker()
+    } catch {
+      input.focus()
+    }
   }
 
   function toggleMember(id: string) {
@@ -93,78 +111,133 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
 
   return (
       <div className="overlay" onClick={onClose}>
-          <form className="event-form card" onSubmit={submit} onClick={(e) => e.stopPropagation()}>
-              <h2>{event ? (event.repeat ? "Edit repeating event" : "Edit event") : "Add event"}</h2>
-              {event?.repeat && <p className="muted">Changes apply to every date in the series.</p>}
-
-              <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="What's happening?"
-                  aria-label="Title"
-                  maxLength={80}
-                  autoFocus={!event}
-              />
-
-              <div className="day-chips" role="radiogroup" aria-label="Day">
-                  {quickDays.map((d) => {
-                    const value = toDateInput(d)
-                    return (
-                        <button
-                            key={value}
-                            type="button"
-                            role="radio"
-                            aria-checked={day === value}
-                            className={day === value ? "selected" : ""}
-                            onClick={() => changeDay(value)}
-                        >
-                            {value === toDateInput(today) ? "Today" : shortDayLabel(d)}
-                        </button>
-                    )
-                  })}
-                  <input type="date" value={day} onChange={(e) => e.target.value && changeDay(e.target.value)} aria-label="Other day" />
+          <form className="event-sheet" onSubmit={submit} onClick={(e) => e.stopPropagation()}>
+              <div className="event-sheet-top">
+                  <span className="muted">{event ? (event.repeat ? "Edit repeating event" : "Edit event") : "New event"}</span>
+                  <button type="button" className="icon-button" onClick={onClose} aria-label="Close">
+                      <FieldIcon name="x" />
+                  </button>
               </div>
 
-              <label className="all-day">
-                  <input type="checkbox" checked={allDay} onChange={(e) => setAllDay(e.target.checked)} />
-                  All day
-              </label>
-              {!allDay && (
-                  <div className="event-times">
-                      <label>From <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} required /></label>
-                      <label>To <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} /></label>
+              <div className="event-sheet-title">
+                  <input
+                      value={title}
+                      onChange={(e) => { setTitle(e.target.value); setError(null) }}
+                      placeholder="What's happening?"
+                      aria-label="Title"
+                      maxLength={80}
+                      autoFocus={!event}
+                  />
+                  {event?.repeat && <p className="muted">Changes apply to every date in the series.</p>}
+              </div>
+
+              <div className="event-fields">
+                  <span className="field-label field-label-top"><FieldIcon name="calendar" />Day</span>
+                  <div className="day-strip" role="radiogroup" aria-label="Day">
+                      {stripDays.map((d) => {
+                        const value = toDateInput(d)
+                        const isToday = value === toDateInput(today)
+                        return (
+                            <button
+                                key={value}
+                                type="button"
+                                role="radio"
+                                aria-checked={day === value}
+                                className={`day-tile${day === value ? " selected" : ""}`}
+                                onClick={() => changeDay(value)}
+                            >
+                                <span className="day-tile-name">{isToday ? "Today" : d.toLocaleDateString(LOCALE, { weekday: "short" })}</span>
+                                <span className="day-tile-number">{d.getDate()}</span>
+                            </button>
+                        )
+                      })}
+                      <button
+                          type="button"
+                          role="radio"
+                          aria-checked={!dayInStrip}
+                          className={`day-tile day-tile-other${dayInStrip ? "" : " selected"}`}
+                          onClick={pickOtherDay}
+                      >
+                          {dayInStrip ? (
+                              <>
+                                  <span className="day-tile-name">Other</span>
+                                  <FieldIcon name="calendarPlus" size={20} />
+                              </>
+                          ) : (
+                              <>
+                                  <span className="day-tile-name">{fromInputs(day).toLocaleDateString(LOCALE, { month: "short" })}</span>
+                                  <span className="day-tile-number">{fromInputs(day).getDate()}</span>
+                              </>
+                          )}
+                      </button>
+                      <input
+                          ref={otherDayInput}
+                          className="visually-hidden-input"
+                          type="date"
+                          value={day}
+                          onChange={(e) => e.target.value && changeDay(e.target.value)}
+                          aria-label="Other day"
+                          tabIndex={-1}
+                      />
                   </div>
-              )}
 
-              <RepeatPicker day={fromInputs(day)} value={rule} onChange={setRule} />
-
-              {members.length > 0 && (
-                  <>
-                      <p className="muted">Who's taking part?</p>
-                      <div className="todo-assignees" role="group" aria-label="Who's taking part">
-                          {members.map((member) => (
-                              <button
-                                  key={member.id}
-                                  type="button"
-                                  aria-pressed={memberIds.includes(member.id)}
-                                  aria-label={member.name}
-                                  title={member.name}
-                                  className={memberIds.includes(member.id) ? "selected" : ""}
-                                  onClick={() => toggleMember(member.id)}
-                              >
-                                  <MemberAvatar member={member} size={36} />
-                              </button>
-                          ))}
+                  <span className="field-label"><FieldIcon name="clock" />Time</span>
+                  <div className="field-row">
+                      <div className="segmented" role="radiogroup" aria-label="Time or all day">
+                          <button type="button" role="radio" aria-checked={!allDay} className={allDay ? "" : "selected"} onClick={() => setAllDay(false)}>
+                              Set time
+                          </button>
+                          <button type="button" role="radio" aria-checked={allDay} className={allDay ? "selected" : ""} onClick={() => setAllDay(true)}>
+                              All day
+                          </button>
                       </div>
-                  </>
-              )}
+                      {!allDay && (
+                          <>
+                              <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} aria-label="From" required />
+                              <span className="muted">to</span>
+                              <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} aria-label="To (optional)" />
+                          </>
+                      )}
+                  </div>
 
-              {error && <p className="error">{error}</p>}
+                  <span className="field-label field-label-top"><FieldIcon name="repeat" />Repeat</span>
+                  <RepeatPicker day={fromInputs(day)} value={rule} onChange={setRule} />
 
-              <div className="event-form-actions">
-                  <button className="primary" type="submit" disabled={saving}>{saving ? "Saving…" : "Save"}</button>
+                  {members.length > 0 && (
+                      <>
+                          <span className="field-label field-label-top"><FieldIcon name="users" />Who</span>
+                          <div className="who-picker" role="group" aria-label="Who's taking part">
+                              {members.map((member) => {
+                                const selected = memberIds.includes(member.id)
+                                return (
+                                    <button
+                                        key={member.id}
+                                        type="button"
+                                        aria-pressed={selected}
+                                        className={`who-option${selected ? " selected" : ""}`}
+                                        onClick={() => toggleMember(member.id)}
+                                    >
+                                        <MemberAvatar member={member} size={40} />
+                                        <span>{member.name}</span>
+                                    </button>
+                                )
+                              })}
+                          </div>
+                      </>
+                  )}
+              </div>
+
+              {error && <p className="error event-sheet-error">{error}</p>}
+
+              <div className="event-sheet-footer">
+                  {onDelete && (
+                      <button type="button" className="text-danger-button" onClick={remove} disabled={saving}>
+                          <FieldIcon name="trash" size={16} />{event?.repeat ? "Delete series" : "Delete"}
+                      </button>
+                  )}
+                  <span className="spacer" />
                   <button type="button" onClick={onClose}>Cancel</button>
-                  {onDelete && <button type="button" className="danger" onClick={remove} disabled={saving}>{event?.repeat ? "Delete series" : "Delete"}</button>}
+                  <button className="primary" type="submit" disabled={saving}>{saving ? "Saving…" : "Save"}</button>
               </div>
           </form>
       </div>
