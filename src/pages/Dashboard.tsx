@@ -4,12 +4,13 @@ import MemberAvatar from "../components/MemberAvatar.tsx";
 import TodosCard from "../components/TodosCard.tsx";
 import WeekCard from "../components/WeekCard.tsx";
 import { useFamilyMembers } from "../lib/familyMembers.ts";
-import { useIsFamilyAdmin } from "../lib/kiosk.ts";
+import { useIsFamilyAdmin, useIsKiosk } from "../lib/kiosk.ts";
 
 function Dashboard() {
   const { user } = useUser()
   const { isLoaded, organization } = useOrganization()
   const isFamilyAdmin = useIsFamilyAdmin()
+  const isKiosk = useIsKiosk()
   const { members, loading, error } = useFamilyMembers()
   const name = user?.firstName ?? user?.username ?? "there"
 
@@ -32,8 +33,13 @@ function Dashboard() {
 
   return (
       <div className="dashboard">
-          <h1>Hi {name} 👋</h1>
-          <p className="muted">Here's what's happening in {organization.name}.</p>
+          {/* On the wall screen the clock header takes the greeting's place. */}
+          {!isKiosk && (
+              <>
+                  <h1>Hi {name} 👋</h1>
+                  <p className="muted">Here's what's happening in {organization.name}.</p>
+              </>
+          )}
 
           <div className="cards">
               <WeekCard members={members} />
