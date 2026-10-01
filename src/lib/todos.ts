@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOrganization } from "@clerk/clerk-react";
+import { useLiveRefresh } from "./realtime.ts";
 import { useSupabase } from "./supabase.ts";
 
 export type Todo = {
@@ -49,6 +50,9 @@ export function useTodos() {
     setLoading(true)
     reload()
   }, [reload])
+
+  // Other screens' changes (e.g. a to-do ticked on a parent's phone) show up here without a reload.
+  useLiveRefresh(supabase, familyId, [{ table: "todos", byFamily: true }], reload)
 
   const add = useCallback(async (title: string, assignedTo: string | null) => {
     const { data, error } = await supabase!

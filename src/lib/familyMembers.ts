@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOrganization } from "@clerk/clerk-react";
+import { useLiveRefresh } from "./realtime.ts";
 import { useSupabase } from "./supabase.ts";
 
 export type FamilyRole = "parent" | "child"
@@ -58,6 +59,9 @@ export function useFamilyMembers() {
     setLoading(true)
     reload()
   }, [reload])
+
+  // Other screens' changes (e.g. a to-do ticked on a parent's phone) show up here without a reload.
+  useLiveRefresh(supabase, familyId, [{ table: "family_members", byFamily: true }], reload)
 
   // Each change runs one write and then reloads; returns an error message, or null on success.
   // Writes select the affected ids: row-level security silently skips rows the user may not change,
