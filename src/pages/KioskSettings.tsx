@@ -1,16 +1,17 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import FieldIcon, { type IconName } from "../components/FieldIcon.tsx";
+import NightModeRow from "../components/NightModeRow.tsx";
 import PinPad from "../components/PinPad.tsx";
 import StartKioskButton from "../components/StartKioskButton.tsx";
-import { useFamilySettings, type FamilySettings } from "../lib/familySettings.ts";
+import { useFamilySettings } from "../lib/familySettings.ts";
 import { useApi, useIsFamilyAdmin } from "../lib/kiosk.ts";
 
 type PinStatus = { hasPin: boolean, disabled: boolean }
-type OpenRow = "pin" | "night" | "install" | null
+type OpenRow = "pin" | "install" | null
 
 // For family admins (parents): start the family screen on this device, and its settings —
-// your unlock PIN, the night mode hours, and how to install it as a full-screen app.
+// your unlock PIN, the night mode hours (edited inline, saved automatically), and how to install it as a full-screen app.
 // ("Family screen" is the family's kiosk account; the route and API keep the kiosk name.)
 function KioskSettings() {
   const isFamilyAdmin = useIsFamilyAdmin()
@@ -78,27 +79,7 @@ function KioskSettings() {
                   />
               </SettingsRow>
 
-              <SettingsRow
-                  icon="moon"
-                  title="Night mode"
-                  subtitle="Dims the family screen to a quiet clock at night"
-                  value={<span className="muted">{settings.nightMode ? `${settings.nightStart}–${settings.nightEnd}` : "Off"}</span>}
-                  action="Edit"
-                  open={open === "night"}
-                  onToggle={() => toggle("night")}
-              >
-                  <NightModeEditor
-                      initial={settings}
-                      onSave={async (next) => {
-                        const failure = await saveSettings(next)
-                        if (!failure) {
-                          setOpen(null)
-                        }
-                        return failure
-                      }}
-                      onCancel={() => setOpen(null)}
-                  />
-              </SettingsRow>
+              <NightModeRow settings={settings} onSave={saveSettings} />
 
               <SettingsRow
                   icon="tablet"
@@ -180,54 +161,6 @@ function PinEditor({ onSaved, onCancel }: { onSaved: (status: PinStatus) => void
           <PinPad onSubmit={enter} />
           {message && <p className="error">{message}</p>}
           <button type="button" onClick={onCancel}>Cancel</button>
-      </div>
-  )
-}
-
-type NightModeEditorProps = {
-  initial: FamilySettings
-  onSave: (settings: FamilySettings) => Promise<string | null>
-  onCancel: () => void
-}
-
-function NightModeEditor({ initial, onSave, onCancel }: NightModeEditorProps) {
-  const [nightMode, setNightMode] = useState(initial.nightMode)
-  const [nightStart, setNightStart] = useState(initial.nightStart)
-  const [nightEnd, setNightEnd] = useState(initial.nightEnd)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  async function save() {
-    if (nightMode && nightStart === nightEnd) {
-      setError("Start and end can't be the same time")
-      return
-    }
-    setSaving(true)
-    setError(await onSave({ nightMode, nightStart, nightEnd }))
-    setSaving(false)
-  }
-
-  return (
-      <div className="night-editor">
-          <div className="field-row">
-              <div className="segmented" role="radiogroup" aria-label="Night mode">
-                  <button type="button" role="radio" aria-checked={nightMode} className={nightMode ? "selected" : ""} onClick={() => setNightMode(true)}>On</button>
-                  <button type="button" role="radio" aria-checked={!nightMode} className={nightMode ? "" : "selected"} onClick={() => setNightMode(false)}>Off</button>
-              </div>
-              {nightMode && (
-                  <>
-                      <span className="muted">from</span>
-                      <input type="time" value={nightStart} onChange={(e) => setNightStart(e.target.value)} aria-label="Night starts" required />
-                      <span className="muted">to</span>
-                      <input type="time" value={nightEnd} onChange={(e) => setNightEnd(e.target.value)} aria-label="Night ends" required />
-                  </>
-              )}
-          </div>
-          {error && <p className="error">{error}</p>}
-          <div className="field-row">
-              <button className="primary" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save"}</button>
-              <button onClick={onCancel}>Cancel</button>
-          </div>
       </div>
   )
 }
