@@ -57,13 +57,6 @@ button.primary {
   margin-bottom: 0.25rem;
 }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
 .card {
   padding: 1.25rem;
   border: 1px solid rgba(128, 128, 128, 0.25);
@@ -73,24 +66,6 @@ button.primary {
 .card h2 {
   font-size: 1.1rem;
   margin: 0 0 0.75rem;
-}
-
-.members {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.members li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.members img {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
 }
 
 .create-family {
@@ -180,14 +155,6 @@ button.primary {
   margin-top: 2rem;
 }
 
-.members {
-  margin-bottom: 0.75rem;
-}
-
-.members li + li {
-  margin-top: 0.4rem;
-}
-
 .member-avatar {
   display: inline-flex;
   align-items: center;
@@ -196,62 +163,6 @@ button.primary {
   border-radius: 50%;
   color: #fff;
   font-weight: 700;
-}
-
-.family-list {
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0;
-}
-
-.family-list > li {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
-}
-
-.family-name {
-  font-size: 1.15rem;
-  font-weight: 600;
-}
-
-.family-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-
-.member-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-}
-
-.member-form-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.member-form input,
-.member-form select {
-  padding: 0.6em 0.8em;
-  font-size: 1em;
-  font-family: inherit;
-  border-radius: 8px;
-  border: 1px solid rgba(128, 128, 128, 0.4);
-  background: transparent;
-  color: inherit;
-}
-
-.member-form input {
-  flex: 1;
-  min-width: 10rem;
 }
 
 .color-picker {
@@ -323,23 +234,6 @@ button.primary {
   font-size: 0.9rem;
 }
 
-.todo-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-top: 1rem;
-}
-
-.todo-form input {
-  padding: 0.6em 0.8em;
-  font-size: 1em;
-  font-family: inherit;
-  border-radius: 8px;
-  border: 1px solid rgba(128, 128, 128, 0.4);
-  background: transparent;
-  color: inherit;
-}
-
 .todo-assignees {
   display: flex;
   flex-wrap: wrap;
@@ -359,37 +253,10 @@ button.primary {
   opacity: 1;
 }
 
-.todo-form button.primary {
-  align-self: flex-start;
-}
-
-.week-day + .week-day {
-  margin-top: 0.75rem;
-}
-
-.week-day h3 {
-  margin: 0 0 0.25rem;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.7;
-}
-
 .week-day ul {
   list-style: none;
   padding: 0;
   margin: 0;
-}
-
-.week-event {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.5rem 0.25rem;
-  text-align: left;
-  background: transparent;
-  border-radius: 8px;
 }
 
 /* Read-only for the kiosk and non-admins: no button look, but full contrast. */
@@ -399,24 +266,8 @@ button.primary {
   border-color: transparent;
 }
 
-.week-time {
-  flex-shrink: 0;
-  min-width: 5.5rem;
-  font-variant-numeric: tabular-nums;
-  opacity: 0.8;
-}
-
 .week-title {
   flex: 1;
-}
-
-.week-members {
-  display: flex;
-  gap: 0.2rem;
-}
-
-.week-card > button.primary {
-  margin-top: 1rem;
 }
 
 .overlay {
@@ -827,23 +678,16 @@ button.primary {
   text-underline-offset: 6px;
 }
 
-.kiosk-display .cards {
+.kiosk-display .dashboard-cards {
   margin-top: 0;
   gap: 1.25rem;
 }
 
-@media (min-width: 900px) {
-  .kiosk-display .cards {
-    grid-template-columns: 1.4fr 1fr 1.2fr;
-    align-items: start;
-  }
-}
-
-.kiosk-display .card {
+.kiosk-display .panel {
   padding: 1.5rem;
 }
 
-.kiosk-display .card h2 {
+.kiosk-display .panel-head h2 {
   font-size: 1.5rem;
 }
 
@@ -878,4 +722,334 @@ button.primary {
 .night-hint {
   font-size: 1rem;
   opacity: 0.6;
+}
+
+/* ---- Family page: member tiles that expand in place ---- */
+
+.family-header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.family-header p {
+  margin: 0.25rem 0 0;
+}
+
+.family-group {
+  margin-top: 1.75rem;
+}
+
+.family-group h2 {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.member-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.1rem 0.5rem 1rem;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 14px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+button.member-tile:hover {
+  border-color: #646cff;
+}
+
+.member-tile-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.member-tile-edit {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.65rem;
+  font-size: 0.9rem;
+  opacity: 0.45;
+}
+
+.member-tile-add {
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+.member-tile-add .member-tile-name {
+  font-weight: 500;
+}
+
+.member-tile-plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 1.5px dashed currentColor;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  font-weight: 300;
+}
+
+/* The expanded card takes the whole row of the grid. */
+.member-editor {
+  grid-column: 1 / -1;
+  border: 1px solid #646cff;
+  border-radius: 14px;
+  animation: member-expand 0.15s ease-out;
+}
+
+@keyframes member-expand {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.member-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.member-editor-head input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.2rem 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.member-editor-fields {
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  padding: 1rem 1.25rem;
+}
+
+.member-editor-fields .segmented {
+  justify-self: start;
+}
+
+.member-editor-error {
+  margin: 0;
+  padding: 0 1.25rem 0.75rem;
+}
+
+.member-editor .event-sheet-footer {
+  padding: 0.85rem 1.25rem;
+}
+
+@media (max-width: 560px) {
+  .member-editor-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- Dashboard ---- */
+
+.page-header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.page-header p {
+  margin: 0.25rem 0 0;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 1.75rem;
+  align-items: start;
+}
+
+@media (min-width: 800px) {
+  .dashboard-cards {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  }
+}
+
+.panel {
+  padding: 1.25rem 1.4rem;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 16px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.panel-head h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.panel-head .muted {
+  font-size: 0.9rem;
+}
+
+.panel-action {
+  padding: 0.4em 0.85em;
+  font-size: 0.9rem;
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  color: inherit;
+}
+
+.empty-note {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.week-day + .week-day {
+  margin-top: 0.9rem;
+}
+
+.week-day h3 {
+  margin: 0 0 0.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.65;
+}
+
+.week-day li + li {
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.week-event {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.6rem 0.25rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: inherit;
+}
+
+button.week-event:not(:disabled):hover {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.week-time {
+  flex-shrink: 0;
+  min-width: 6.5rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+/* Overlapping avatars, like a small stack. */
+.week-members,
+.avatar-stack {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.week-members .member-avatar + .member-avatar,
+.avatar-stack .member-avatar + .member-avatar {
+  margin-left: -6px;
+  box-shadow: 0 0 0 2px #242424;
+}
+
+.todo-add {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.todo-add-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.todo-add-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6em 0.8em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.todo-add-row button {
+  padding: 0 0.9em;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.todo-assignees {
+  align-items: center;
+}
+
+.todo-list li + li {
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+@media (prefers-color-scheme: light) {
+  .week-members .member-avatar + .member-avatar,
+  .avatar-stack .member-avatar + .member-avatar {
+    box-shadow: 0 0 0 2px #ffffff;
+  }
+}
+
+.todo-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+
+.todo-filter button {
+  padding: 2px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: inherit;
+  opacity: 0.5;
+}
+
+.todo-filter button.selected {
+  border-color: #646cff;
+  opacity: 1;
+}
+
+.todo-filter .todo-filter-all {
+  padding: 0.3em 0.9em;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.todo-filter .todo-filter-all.selected {
+  border-color: #646cff;
+  background-color: rgba(100, 108, 255, 0.2);
+  opacity: 1;
 }
