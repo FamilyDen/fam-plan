@@ -7,8 +7,19 @@ export type Todo = {
   id: string
   title: string
   done: boolean
-  assigned_to: string | null
+  member_ids: string[] // who it's for (todo_members); empty = everyone / unassigned
   created_at: string
+}
+
+type TodoRow = Omit<Todo, "member_ids"> & { todo_members: { member_id: string }[] }
+
+const TODO_COLUMNS = "id, title, done, created_at, todo_members(member_id)"
+
+// todo_members has no family_id; row-level security limits which of its changes reach this screen.
+const TODO_TABLES = [{ table: "todos", byFamily: true }, { table: "todo_members", byFamily: false }]
+
+function fromRow({ todo_members, ...todo }: TodoRow): Todo {
+  return { ...todo, member_ids: todo_members.map((m) => m.member_id) }
 }
 
 // To-dos of the active family. Row-level security scopes every query to the active Clerk organization;
@@ -34,13 +45,13 @@ export function useTodos() {
     }
     const { data, error } = await supabase
         .from("todos")
-        .select("id, title, done, assigned_to, created_at")
+        .select(TODO_COLUMNS)
         .order("created_at")
     if (error) {
       console.error(error)
       setError("Couldn't load to-dos")
     } else {
-      setTodos(data as Todo[])
+      setTodos((data as TodoRow[]).map(fromRow))
       setError(null)
     }
     setLoading(false)
@@ -52,21 +63,33 @@ export function useTodos() {
   }, [reload])
 
   // Other screens' changes (e.g. a to-do ticked on a parent's phone) show up here without a reload.
-  useLiveRefresh(supabase, familyId, [{ table: "todos", byFamily: true }], reload)
+  useLiveRefresh(supabase, familyId, TODO_TABLES, reload)
 
-  const add = useCallback(async (title: string, assignedTo: string | null) => {
+  // Creates the to-do, then who it's for. If those links can't be saved, the to-do is removed again
+  // so there's never a half-saved to-do. Returns an error message, or null on success.
+  const add = useCallback(async (title: string, memberIds: string[]) => {
     const { data, error } = await supabase!
         .from("todos")
-        .insert({ title, assigned_to: assignedTo })
-        .select("id, title, done, assigned_to, created_at")
+        .insert({ title })
+        .select("id")
         .single()
     if (error) {
       console.error(error)
       return "Couldn't add the to-do"
     }
-    setTodos((current) => [...current, data as Todo])
+    if (memberIds.length > 0) {
+      const { error: membersError } = await supabase!
+          .from("todo_members")
+          .insert(memberIds.map((memberId) => ({ todo_id: data.id, member_id: memberId })))
+      if (membersError) {
+        console.error(membersError)
+        await supabase!.from("todos").delete().eq("id", data.id)
+        return "Couldn't add the to-do"
+      }
+    }
+    await reload()
     return null
-  }, [supabase])
+  }, [supabase, reload])
 
   // Ticks update the screen immediately (it's a touch screen) and roll back if the write fails.
   const setDone = useCallback(async (id: string, done: boolean) => {

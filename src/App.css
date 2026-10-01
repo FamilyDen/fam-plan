@@ -962,11 +962,14 @@ button.week-event:not(:disabled):hover {
 }
 
 /* Overlapping avatars, like a small stack. */
-.week-members {
+.week-members,
+.avatar-stack {
   display: flex;
+  flex-shrink: 0;
 }
 
-.week-members .member-avatar + .member-avatar {
+.week-members .member-avatar + .member-avatar,
+.avatar-stack .member-avatar + .member-avatar {
   margin-left: -6px;
   box-shadow: 0 0 0 2px #242424;
 }
@@ -1010,7 +1013,8 @@ button.week-event:not(:disabled):hover {
 }
 
 @media (prefers-color-scheme: light) {
-  .week-members .member-avatar + .member-avatar {
+  .week-members .member-avatar + .member-avatar,
+  .avatar-stack .member-avatar + .member-avatar {
     box-shadow: 0 0 0 2px #ffffff;
   }
 }
