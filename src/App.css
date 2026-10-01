@@ -271,3 +271,94 @@ button.primary {
 .color-picker button.selected {
   border-color: currentColor;
 }
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.todo-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.6rem 0.25rem;
+  text-align: left;
+  background: transparent;
+  border-radius: 8px;
+}
+
+.todo-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.todo-title {
+  flex: 1;
+}
+
+.todo-list li.done .todo-title {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.todo-list li.done .todo-check {
+  background-color: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+}
+
+.link-button {
+  padding: 0.25rem 0;
+  background: transparent;
+  color: #646cff;
+  font-size: 0.9rem;
+}
+
+.todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.todo-form input {
+  padding: 0.6em 0.8em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.todo-assignees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.todo-assignees button {
+  padding: 2px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: transparent;
+  opacity: 0.55;
+}
+
+.todo-assignees button.selected {
+  border-color: currentColor;
+  opacity: 1;
+}
+
+.todo-form button.primary {
+  align-self: flex-start;
+}

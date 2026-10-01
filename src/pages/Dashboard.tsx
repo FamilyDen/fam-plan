@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { CreateOrganization, useOrganization, useUser } from "@clerk/clerk-react";
 import MemberAvatar from "../components/MemberAvatar.tsx";
+import TodosCard from "../components/TodosCard.tsx";
 import { useFamilyMembers } from "../lib/familyMembers.ts";
 import { useIsFamilyAdmin } from "../lib/kiosk.ts";
 
@@ -55,10 +56,7 @@ function Dashboard() {
                   <Link to="/family">{isFamilyAdmin ? "Manage family" : "See everyone"}</Link>
               </section>
 
-              <section className="card">
-                  <h2>To-dos</h2>
-                  <p className="muted">Nothing on the list.</p>
-              </section>
+              <TodosCard members={members} />
           </div>
       </div>
   )
