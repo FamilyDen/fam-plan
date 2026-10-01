@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOrganization } from "@clerk/clerk-react";
+import { useLiveRefresh } from "./realtime.ts";
 import { useSupabase } from "./supabase.ts";
 
 export type FamilyEvent = {
@@ -20,6 +21,9 @@ export type FamilyEventInput = {
 }
 
 type EventRow = Omit<FamilyEvent, "member_ids"> & { event_members: { member_id: string }[] }
+
+// event_members has no family_id; row-level security limits which of its changes reach this screen.
+const EVENT_TABLES = [{ table: "events", byFamily: true }, { table: "event_members", byFamily: false }]
 
 const EVENT_COLUMNS = "id, title, starts_at, ends_at, all_day, event_members(member_id)"
 
@@ -71,6 +75,9 @@ export function useEvents(from: Date, to: Date) {
     setLoading(true)
     reload()
   }, [reload])
+
+  // Other screens' changes (e.g. a to-do ticked on a parent's phone) show up here without a reload.
+  useLiveRefresh(supabase, familyId, EVENT_TABLES, reload)
 
   const setMembers = useCallback(async (eventId: string, memberIds: string[]) => {
     const { error: deleteError } = await supabase!.from("event_members").delete().eq("event_id", eventId)
