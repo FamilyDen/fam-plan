@@ -508,3 +508,59 @@ button.danger {
     background-color: #ffffff;
   }
 }
+
+.week-repeat {
+  opacity: 0.6;
+}
+
+.repeat-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.repeat-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+
+.repeat-picker select,
+.repeat-picker input[type="date"] {
+  padding: 0.5em 0.7em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.repeat-picker select option {
+  color: #213547;
+}
+
+.repeat-summary {
+  margin: 0;
+}
+
+.occurrence-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 22rem;
+  background-color: #242424;
+}
+
+.occurrence-menu h2,
+.occurrence-menu p {
+  margin: 0;
+}
+
+@media (prefers-color-scheme: light) {
+  .occurrence-menu {
+    background-color: #ffffff;
+  }
+}

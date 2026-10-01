@@ -2,34 +2,51 @@ import { useEffect, useState } from "react";
 import EventForm from "./EventForm.tsx";
 import MemberAvatar from "./MemberAvatar.tsx";
 import type { FamilyMember } from "../lib/familyMembers.ts";
-import { useEvents, type FamilyEvent } from "../lib/events.ts";
+import { useEvents, type EventOccurrence, type FamilyEvent, type FamilyEventInput } from "../lib/events.ts";
 import { addDays, dayLabel, startOfDay, toDateInput, toTimeInput } from "../lib/dates.ts";
+import { describeRepeat } from "../lib/recurrence.ts";
 import { useIsFamilyAdmin } from "../lib/kiosk.ts";
 
 const DAYS = 7
 
-// The family's events for today and the next 6 days, grouped by day. Parents can add, edit and delete
-// events; everyone else (including the kiosk) sees them read-only.
+// The family's events for today and the next 6 days, grouped by day, with repeating events on each of
+// their dates. Parents can add, edit and delete events (and skip a date of a repeating one); everyone
+// else (including the kiosk) sees them read-only.
 function WeekCard({ members }: { members: FamilyMember[] }) {
   const today = useToday()
   const isFamilyAdmin = useIsFamilyAdmin()
-  const { events, loading, error, add, update, remove } = useEvents(today, addDays(today, DAYS))
+  const { occurrences, loading, error, add, update, remove, skip } = useEvents(today, addDays(today, DAYS))
   const [editing, setEditing] = useState<FamilyEvent | "new" | null>(null)
+  const [choosing, setChoosing] = useState<EventOccurrence | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
   const membersById = new Map(members.map((m) => [m.id, m]))
   const days = Array.from({ length: DAYS }, (_, i) => addDays(today, i))
-      .map((day) => ({ day, events: events.filter((e) => toDateInput(new Date(e.starts_at)) === toDateInput(day)) }))
-      .filter((d) => d.events.length > 0)
+      .map((day) => ({ day, occurrences: occurrences.filter((o) => toDateInput(o.startsAt) === toDateInput(day)) }))
+      .filter((d) => d.occurrences.length > 0)
 
-  // Tells the parent where an event went when it's saved outside the visible week.
-  async function save(input: Parameters<typeof add>[0], id?: string) {
+  // Tells the parent where an event went when its (first) date is outside the visible week.
+  async function save(input: FamilyEventInput, id?: string) {
     const failure = id ? await update(id, input) : await add(input)
     if (!failure) {
-      const outside = input.startsAt < today || input.startsAt >= addDays(today, DAYS)
-      setNotice(outside ? `Saved for ${dayLabel(input.startsAt, today)}. It will show here in that week.` : null)
+      const outside = input.startsAt >= addDays(today, DAYS) || (!input.rule.repeat && input.startsAt < today)
+      setNotice(outside ? `Saved, starting ${dayLabel(input.startsAt, today)}. It will show here in that week.` : null)
     }
     return failure
+  }
+
+  function open(occurrence: EventOccurrence) {
+    setNotice(null)
+    if (occurrence.event.repeat) {
+      setChoosing(occurrence)
+    } else {
+      setEditing(occurrence.event)
+    }
+  }
+
+  async function skipDate(occurrence: EventOccurrence) {
+    setChoosing(null)
+    setNotice(await skip(occurrence.event.id, toDateInput(occurrence.startsAt)))
   }
 
   return (
@@ -41,21 +58,26 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
           {!loading && !error && (
               <>
                   {days.length === 0 && <p className="muted">Nothing planned this week.</p>}
-                  {days.map(({ day, events }) => (
+                  {days.map(({ day, occurrences }) => (
                       <div key={toDateInput(day)} className="week-day">
                           <h3>{dayLabel(day, today)}</h3>
                           <ul>
-                              {events.map((event) => (
-                                  <li key={event.id}>
+                              {occurrences.map((occurrence) => (
+                                  <li key={occurrence.key}>
                                       <button
                                           className="week-event"
-                                          onClick={isFamilyAdmin ? () => setEditing(event) : undefined}
+                                          onClick={isFamilyAdmin ? () => open(occurrence) : undefined}
                                           disabled={!isFamilyAdmin}
                                       >
-                                          <span className="week-time">{timeLabel(event)}</span>
-                                          <span className="week-title">{event.title}</span>
+                                          <span className="week-time">{timeLabel(occurrence)}</span>
+                                          <span className="week-title">
+                                              {occurrence.event.title}
+                                              {occurrence.event.repeat && (
+                                                  <span className="week-repeat" title={describeRepeat(occurrence.event, new Date(occurrence.event.starts_at))}> ↻</span>
+                                              )}
+                                          </span>
                                           <span className="week-members">
-                                              {event.member_ids.map((id) => membersById.get(id)).filter((m) => m !== undefined)
+                                              {occurrence.event.member_ids.map((id) => membersById.get(id)).filter((m) => m !== undefined)
                                                   .map((member) => <MemberAvatar key={member.id} member={member} size={24} />)}
                                           </span>
                                       </button>
@@ -68,6 +90,20 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
               </>
           )}
           {notice && <p className="muted">{notice}</p>}
+
+          {choosing && (
+              <div className="overlay" onClick={() => setChoosing(null)}>
+                  <div className="card occurrence-menu" onClick={(e) => e.stopPropagation()}>
+                      <h2>{choosing.event.title}</h2>
+                      <p className="muted">
+                          {dayLabel(choosing.startsAt, today)} · ↻ {describeRepeat(choosing.event, new Date(choosing.event.starts_at))}
+                      </p>
+                      <button onClick={() => skipDate(choosing)}>Skip {skipLabel(dayLabel(choosing.startsAt, today))}</button>
+                      <button onClick={() => { setEditing(choosing.event); setChoosing(null) }}>Edit series</button>
+                      <button onClick={() => setChoosing(null)}>Cancel</button>
+                  </div>
+              </div>
+          )}
 
           {editing && (
               <EventForm
@@ -82,12 +118,17 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
   )
 }
 
-function timeLabel(event: FamilyEvent) {
+// "Skip today", "Skip tomorrow", "Skip Fri 9 Oct".
+function skipLabel(day: string) {
+  return day === "Today" || day === "Tomorrow" ? day.toLowerCase() : day
+}
+
+function timeLabel({ event, startsAt, endsAt }: EventOccurrence) {
   if (event.all_day) {
     return "All day"
   }
-  const start = toTimeInput(new Date(event.starts_at))
-  return event.ends_at ? `${start}–${toTimeInput(new Date(event.ends_at))}` : start
+  const start = toTimeInput(startsAt)
+  return endsAt ? `${start}–${toTimeInput(endsAt)}` : start
 }
 
 // Start of today, kept current: the kiosk screen stays on overnight, so "Today" must move at midnight.
