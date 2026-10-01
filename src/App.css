@@ -760,3 +760,122 @@ button.primary {
     box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #646cff;
   }
 }
+
+/* ---- Wall-screen (kiosk) display ---- */
+
+#root:has(.kiosk-display) {
+  max-width: none;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.kiosk-display {
+  font-size: 1.15rem;
+}
+
+.kiosk-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 0 1rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.kiosk-clock {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.kiosk-time {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.kiosk-date {
+  font-size: clamp(1.2rem, 2.2vw, 1.75rem);
+  opacity: 0.8;
+}
+
+.kiosk-header-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.kiosk-family {
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.kiosk-header nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.kiosk-header nav a {
+  padding: 0.4rem 0;
+}
+
+.kiosk-header nav a.active {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+.kiosk-display .cards {
+  margin-top: 0;
+  gap: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .kiosk-display .cards {
+    grid-template-columns: 1.4fr 1fr 1.2fr;
+    align-items: start;
+  }
+}
+
+.kiosk-display .card {
+  padding: 1.5rem;
+}
+
+.kiosk-display .card h2 {
+  font-size: 1.5rem;
+}
+
+.kiosk-display .todo-toggle,
+.kiosk-display .week-event {
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+.night-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  border: none;
+  border-radius: 0;
+  background: #000;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+}
+
+.night-time {
+  font-size: clamp(4rem, 14vw, 10rem);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+
+.night-hint {
+  font-size: 1rem;
+  opacity: 0.6;
+}
