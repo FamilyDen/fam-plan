@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { CreateOrganization, useOrganization, useUser } from "@clerk/clerk-react";
 import MemberAvatar from "../components/MemberAvatar.tsx";
 import TodosCard from "../components/TodosCard.tsx";
+import WeekCard from "../components/WeekCard.tsx";
 import { useFamilyMembers } from "../lib/familyMembers.ts";
 import { useIsFamilyAdmin } from "../lib/kiosk.ts";
 
@@ -35,10 +36,7 @@ function Dashboard() {
           <p className="muted">Here's what's happening in {organization.name}.</p>
 
           <div className="cards">
-              <section className="card">
-                  <h2>This week</h2>
-                  <p className="muted">No events planned yet.</p>
-              </section>
+              <WeekCard members={members} />
 
               <section className="card">
                   <h2>Family members</h2>
