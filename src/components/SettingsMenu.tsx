@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { useClerk, useOrganization, useOrganizationList } from "@clerk/clerk-react";
+import { useClerk, useOrganization, useOrganizationList, useUser } from "@clerk/clerk-react";
 import FieldIcon, { type IconName } from "./FieldIcon.tsx";
 import { useIsFamilyAdmin } from "../lib/kiosk.ts";
 
-// The ⚙ dropdown in the top bar: family-level actions grouped in sections, so new options can be added
+// The one menu in the top bar, opened from your avatar (with a small ⚙ badge): who you are, family actions,
+// and your account — replacing Clerk's own avatar menu. Grouped in sections, so new options can be added
 // as another <MenuItem> (or section) later. Parents see the admin items; switching only appears with
 // more than one family.
 function SettingsMenu() {
@@ -14,6 +15,7 @@ function SettingsMenu() {
   const clerk = useClerk()
   const isFamilyAdmin = useIsFamilyAdmin()
   const { organization } = useOrganization()
+  const { user } = useUser()
   const { userMemberships, setActive } = useOrganizationList({ userMemberships: true })
   const families = userMemberships?.data?.map((m) => m.organization) ?? []
 
@@ -45,17 +47,30 @@ function SettingsMenu() {
       <div className="settings-menu" ref={root}>
           <button
               type="button"
-              className="icon-button settings-menu-button"
-              aria-label="Settings"
+              className="settings-menu-button"
+              aria-label="Account and settings"
               aria-haspopup="menu"
               aria-expanded={open}
               onClick={() => setOpen((o) => !o)}
           >
-              <FieldIcon name="settings" size={22} />
+              {user?.imageUrl
+                  ? <img className="settings-menu-avatar" src={user.imageUrl} alt="" />
+                  : <span className="settings-menu-avatar"><FieldIcon name="user" /></span>}
+              <span className="settings-menu-badge" aria-hidden><FieldIcon name="settings" size={11} /></span>
           </button>
 
           {open && (
               <div className="settings-menu-panel" role="menu">
+                  {user && (
+                      <div className="settings-menu-user">
+                          {user.imageUrl && <img src={user.imageUrl} alt="" />}
+                          <div>
+                              <div className="settings-menu-user-name">{user.fullName ?? user.username ?? "You"}</div>
+                              <div className="settings-menu-user-email">{user.primaryEmailAddress?.emailAddress}</div>
+                          </div>
+                      </div>
+                  )}
+
                   {organization && <div className="settings-menu-heading">{organization.name}</div>}
 
                   {isFamilyAdmin && (
@@ -89,6 +104,11 @@ function SettingsMenu() {
                       <MenuItem icon="plus" onSelect={() => run(() => clerk.openCreateOrganization({ afterCreateOrganizationUrl: "/dashboard" }))}>
                           Create a family
                       </MenuItem>
+                  </MenuSection>
+
+                  <MenuSection>
+                      <MenuItem icon="user" onSelect={() => run(() => clerk.openUserProfile())}>Manage account</MenuItem>
+                      <MenuItem icon="logout" onSelect={() => run(() => clerk.signOut({ redirectUrl: "/" }))}>Sign out</MenuItem>
                   </MenuSection>
               </div>
           )}

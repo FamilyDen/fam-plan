@@ -1462,9 +1462,81 @@ button.week-event:not(:disabled):hover {
   position: relative;
 }
 
-.settings-menu-button[aria-expanded="true"] {
-  opacity: 1;
-  color: #646cff;
+/* The avatar button with a small gear badge. */
+.settings-menu-button {
+  position: relative;
+  display: inline-flex;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+}
+
+.settings-menu-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background-color: rgba(128, 128, 128, 0.3);
+  object-fit: cover;
+}
+
+.settings-menu-badge {
+  position: absolute;
+  right: -0.25rem;
+  bottom: -0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  border-radius: 50%;
+  background-color: #242424;
+}
+
+.settings-menu-button[aria-expanded="true"] .settings-menu-avatar,
+.settings-menu-button:focus-visible .settings-menu-avatar {
+  box-shadow: 0 0 0 2px #242424, 0 0 0 4px #646cff;
+}
+
+.settings-menu-button:focus-visible {
+  outline: none;
+}
+
+.settings-menu-user {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.65rem 0.7rem;
+  margin-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.settings-menu-user img {
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.settings-menu-user > div {
+  min-width: 0;
+}
+
+.settings-menu-user-name {
+  font-weight: 600;
+}
+
+.settings-menu-user-email {
+  overflow: hidden;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .settings-menu-panel {
@@ -1538,6 +1610,15 @@ button.week-event:not(:disabled):hover {
   .settings-menu-panel {
     background-color: #ffffff;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  .settings-menu-badge {
+    background-color: #ffffff;
+  }
+
+  .settings-menu-button[aria-expanded="true"] .settings-menu-avatar,
+  .settings-menu-button:focus-visible .settings-menu-avatar {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #646cff;
   }
 }
 

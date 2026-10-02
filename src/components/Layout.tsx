@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { SignedIn, SignedOut, SignInButton, UserButton, useOrganization } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton, useOrganization } from "@clerk/clerk-react";
 import FieldIcon from "./FieldIcon.tsx";
 import KioskHeader from "./KioskHeader.tsx";
 import NightScreen from "./NightScreen.tsx";
@@ -29,7 +29,6 @@ function Layout() {
                           <NavLink to="/family">Members</NavLink>
                       </span>
                       <SettingsMenu />
-                      <UserButton />
                   </SignedIn>
                   <SignedOut>
                       <SignInButton />
