@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import FieldIcon from "./FieldIcon.tsx";
 import MemberAvatar from "./MemberAvatar.tsx";
 import { MEMBER_COLORS, type FamilyMemberInput, type FamilyRole } from "../lib/familyMembers.ts";
+import { useTranslation } from "react-i18next";
 
 type MemberEditorProps = {
   initial: FamilyMemberInput
@@ -15,6 +16,7 @@ type MemberEditorProps = {
 // A member card expanded in place: name, parent/child and color, with Remove / Cancel / Save.
 // The avatar previews the name and color as they change.
 function MemberEditor({ initial, isNew, onSave, onRemove, onClose }: MemberEditorProps) {
+  const { t } = useTranslation()
   const [name, setName] = useState(initial.name)
   const [role, setRole] = useState<FamilyRole>(initial.role)
   const [color, setColor] = useState(initial.color ?? MEMBER_COLORS[0])
@@ -24,7 +26,7 @@ function MemberEditor({ initial, isNew, onSave, onRemove, onClose }: MemberEdito
   async function submit(event: FormEvent) {
     event.preventDefault()
     if (!name.trim()) {
-      setError("Enter a name")
+      setError(t("members.enterName"))
       return
     }
     setSaving(true)
@@ -38,7 +40,7 @@ function MemberEditor({ initial, isNew, onSave, onRemove, onClose }: MemberEdito
   }
 
   async function remove() {
-    if (!onRemove || !window.confirm(`Remove ${initial.name} from the family? Their to-dos will become unassigned.`)) {
+    if (!onRemove || !window.confirm(t("members.confirmRemove", { name: initial.name }))) {
       return
     }
     setSaving(true)
@@ -56,35 +58,35 @@ function MemberEditor({ initial, isNew, onSave, onRemove, onClose }: MemberEdito
           className="member-editor"
           onSubmit={submit}
           onKeyDown={(e) => e.key === "Escape" && onClose()}
-          aria-label={isNew ? "Add a family member" : `Edit ${initial.name}`}
+          aria-label={isNew ? t("members.addMember") : t("members.edit", { name: initial.name })}
       >
           <div className="member-editor-head">
               <MemberAvatar member={{ name: name || "?", color }} size={56} />
               <input
                   value={name}
                   onChange={(e) => { setName(e.target.value); setError(null) }}
-                  placeholder="Name"
-                  aria-label="Name"
+                  placeholder={t("members.name")}
+                  aria-label={t("members.name")}
                   maxLength={40}
                   autoFocus
               />
-              <button type="button" className="icon-button" onClick={onClose} aria-label="Close">
+              <button type="button" className="icon-button" onClick={onClose} aria-label={t("common.close")}>
                   <FieldIcon name="x" />
               </button>
           </div>
 
           <div className="event-fields member-editor-fields">
-              <span className="field-label">Role</span>
-              <div className="segmented" role="radiogroup" aria-label="Role">
+              <span className="field-label">{t("members.role")}</span>
+              <div className="segmented" role="radiogroup" aria-label={t("members.role")}>
                   {(["parent", "child"] as const).map((r) => (
                       <button key={r} type="button" role="radio" aria-checked={role === r} className={role === r ? "selected" : ""} onClick={() => setRole(r)}>
-                          {r === "parent" ? "Parent" : "Child"}
+                          {t(`members.roles.${r}`)}
                       </button>
                   ))}
               </div>
 
-              <span className="field-label">Color</span>
-              <div className="color-picker" role="radiogroup" aria-label="Color">
+              <span className="field-label">{t("members.color")}</span>
+              <div className="color-picker" role="radiogroup" aria-label={t("members.color")}>
                   {MEMBER_COLORS.map((c) => (
                       <button
                           key={c}
@@ -105,12 +107,12 @@ function MemberEditor({ initial, isNew, onSave, onRemove, onClose }: MemberEdito
           <div className="event-sheet-footer">
               {onRemove && (
                   <button type="button" className="text-danger-button" onClick={remove} disabled={saving}>
-                      <FieldIcon name="trash" size={16} />Remove
+                      <FieldIcon name="trash" size={16} />{t("members.remove")}
                   </button>
               )}
               <span className="spacer" />
-              <button type="button" onClick={onClose}>Cancel</button>
-              <button className="primary" type="submit" disabled={saving}>{saving ? "Saving…" : isNew ? "Add" : "Save"}</button>
+              <button type="button" onClick={onClose}>{t("common.cancel")}</button>
+              <button className="primary" type="submit" disabled={saving}>{saving ? t("common.saving") : isNew ? t("common.add") : t("common.save")}</button>
           </div>
       </form>
   )

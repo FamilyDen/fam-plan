@@ -147,6 +147,13 @@ describe("family_settings", () => {
     await expect(as(db, screenC, "insert into family_settings (night_mode) values (false)")).rejects.toThrow(RLS_VIOLATION)
   })
 
+  it("store the family language, set by parents and validated by shape", async () => {
+    expect(await as(db, parentA, "update family_settings set language = 'da' returning language")).toEqual([{ language: "da" }])
+    await expect(as(db, parentA, "update family_settings set language = 'Danish'")).rejects.toThrow(/language/)
+    expect(await as(db, screenA, "update family_settings set language = 'en' returning language")).toHaveLength(0)
+    expect(await as(db, screenA, "select language from family_settings")).toEqual([{ language: "da" }])
+  })
+
   it("are separate per family", async () => {
     expect(await as(db, parentB, "select family_id from family_settings")).toHaveLength(0)
     expect(await as(db, parentB, upsert, [true, "22:00", "06:00"])).toHaveLength(1)

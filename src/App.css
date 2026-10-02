@@ -294,7 +294,17 @@ button.primary {
 }
 
 .day-chips button {
-  padding: 0.5em 0.8em;
+  padding: 0.5em 0.6em;
+}
+
+/* Weekday buttons in the repeat picker: seven on one line, also with longer names (e.g. Danish "tors."). */
+.repeat-picker .day-chips {
+  gap: 0.3rem;
+}
+
+.repeat-picker .day-chips button {
+  padding: 0.45em 0.5em;
+  font-size: 0.9em;
 }
 
 .day-chips button.selected {
@@ -1636,4 +1646,31 @@ button.week-event:not(:disabled):hover {
   .family-brand-name {
     font-size: 0.98rem;
   }
+}
+
+/* Language view inside the account menu */
+.settings-menu-value {
+  margin-left: auto;
+  font-size: 0.85rem;
+  opacity: 0.55;
+}
+
+.settings-menu-back {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.5rem 0.55rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.settings-menu-note {
+  margin: 0.2rem 0.65rem 0.4rem;
+  font-size: 0.78rem;
+  opacity: 0.55;
 }

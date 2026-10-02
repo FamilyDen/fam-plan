@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { toDateInput } from "../lib/dates.ts";
+import i18n, { weekdaysInOrder } from "../i18n/index.ts";
+import { toDateInput, weekdayName } from "../lib/dates.ts";
 import { ALL_DAYS, describeRepeat, isLastWeekOfMonth, NO_REPEAT, weekOfMonth, weeklyPreset, WORKWEEK, type RepeatRule } from "../lib/recurrence.ts";
+import { useTranslation } from "react-i18next";
 
-// Monday first, as on Danish calendars.
-const WEEKDAYS = ALL_DAYS
 const WEEK_INTERVALS = [1, 2, 3, 4]
 const MONTH_INTERVALS = [1, 2, 3, 6, 12]
 
@@ -14,21 +14,21 @@ type Option = { value: string, label: string, rule: (current: RepeatRule) => Rep
 function optionsFor(day: Date): Option[] {
   const describe = (rule: RepeatRule) => describeRepeat({ ...rule, repeat_interval: 1, repeat_until: null }, day)
   const options: Option[] = [
-    { value: "none", label: "Doesn't repeat", rule: () => NO_REPEAT },
+    { value: "none", label: i18n.t("repeat.none"), rule: () => NO_REPEAT },
     // Daily and weekdays are stored as weekly rules every week.
     {
       value: "daily",
-      label: "Daily",
+      label: i18n.t("repeat.daily"),
       rule: (current) => ({ ...current, repeat: "weekly", repeat_weekdays: ALL_DAYS, repeat_interval: 1 }),
     },
     {
       value: "weekdays",
-      label: "Every weekday (Mon–Fri)",
+      label: i18n.t("repeat.everyWeekdayOption"),
       rule: (current) => ({ ...current, repeat: "weekly", repeat_weekdays: WORKWEEK, repeat_interval: 1 }),
     },
     {
       value: "weekly",
-      label: "Weekly",
+      label: i18n.t("repeat.weeklyOption"),
       rule: (current) => ({
         ...current,
         repeat: "weekly",
@@ -69,6 +69,7 @@ type RepeatPickerProps = {
 }
 
 function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
+  const { t } = useTranslation()
   const options = optionsFor(day)
   // The chosen menu option, kept separately so that ticking Mon–Fri in "Weekly" doesn't flip the menu
   // to "Every weekday" mid-tap. Derived from the saved rule when the form opens.
@@ -96,7 +97,7 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
               <select
                   value={options.some((o) => o.value === selected) ? selected : valueOf(value)}
                   onChange={(e) => choose(e.target.value)}
-                  aria-label="Repeat"
+                  aria-label={t("repeat.label")}
               >
                   {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
@@ -104,16 +105,16 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
                   <select
                       value={value.repeat_interval}
                       onChange={(e) => onChange({ ...value, repeat_interval: Number(e.target.value) })}
-                      aria-label="How often"
+                      aria-label={t("repeat.howOften")}
                   >
-                      {intervals.map((n) => <option key={n} value={n}>{n === 1 ? `Every ${unit}` : `Every ${n} ${unit}s`}</option>)}
+                      {intervals.map((n) => <option key={n} value={n}>{t(`repeat.interval.${unit}`, { count: n })}</option>)}
                   </select>
               )}
           </div>
 
           {weekly && !preset && (
-              <div className="day-chips" role="group" aria-label="On these days">
-                  {WEEKDAYS.map((weekday) => (
+              <div className="day-chips" role="group" aria-label={t("repeat.onDays")}>
+                  {weekdaysInOrder().map((weekday) => (
                       <button
                           key={weekday}
                           type="button"
@@ -121,7 +122,7 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
                           className={value.repeat_weekdays?.includes(weekday) ? "selected" : ""}
                           onClick={() => toggleWeekday(weekday)}
                       >
-                          {new Date(2026, 0, 4 + weekday).toLocaleDateString("en-GB", { weekday: "short" })}
+                          {weekdayName(weekday, "short")}
                       </button>
                   ))}
               </div>
@@ -129,17 +130,17 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
 
           {value.repeat && (
               <div className="field-row">
-                  <span className="muted">Until</span>
+                  <span className="muted">{t("repeat.untilLabel")}</span>
                   <input
                       type="date"
                       value={value.repeat_until ?? ""}
                       min={toDateInput(day)}
                       onChange={(e) => onChange({ ...value, repeat_until: e.target.value || null })}
-                      aria-label="Repeat until (optional)"
+                      aria-label={t("repeat.untilOptional")}
                   />
                   {value.repeat_until
-                      ? <button type="button" className="link-button" onClick={() => onChange({ ...value, repeat_until: null })}>No end</button>
-                      : <span className="muted">optional</span>}
+                      ? <button type="button" className="link-button" onClick={() => onChange({ ...value, repeat_until: null })}>{t("repeat.noEnd")}</button>
+                      : <span className="muted">{t("repeat.optional")}</span>}
               </div>
           )}
 

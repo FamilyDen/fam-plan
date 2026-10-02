@@ -1,0 +1,259 @@
+{
+  "common": {
+    "add": "Add",
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "loading": "Loading…",
+    "ok": "OK",
+    "save": "Save",
+    "saved": "Saved ✓",
+    "saving": "Saving…",
+    "signIn": "Sign in"
+  },
+  "nav": {
+    "home": "Home",
+    "members": "Members",
+    "unlock": "Unlock"
+  },
+  "home": {
+    "tagline": "Plan the week together — schedules, chores and to-dos for the whole family in one place.",
+    "getStarted": "Get started"
+  },
+  "dashboard": {
+    "greeting": "Hi {{name}} 👋",
+    "greetingNoName": "Hi 👋",
+    "createFamily": "Create your family to start planning together, or pick one from the menu above."
+  },
+  "dates": {
+    "today": "Today",
+    "tomorrow": "Tomorrow"
+  },
+  "menu": {
+    "open": "Account and settings",
+    "you": "You",
+    "familyScreen": "Family screen",
+    "parentsInvites": "Parents & invites",
+    "switchFamily": "Switch family",
+    "createFamily": "Create a family",
+    "language": "Language",
+    "manageAccount": "Manage account",
+    "signOut": "Sign out"
+  },
+  "language": {
+    "yours": "Your language",
+    "family": "Family language",
+    "sameAsFamily": "Same as family ({{language}})",
+    "automatic": "Automatic",
+    "familyNote": "Used by the family screen and by everyone who hasn't picked their own."
+  },
+  "members": {
+    "title": "Members",
+    "count_one": "{{count}} member",
+    "count_other": "{{count}} members",
+    "groups": {
+      "parent": "Parents",
+      "child": "Children"
+    },
+    "add": {
+      "parent": "Add parent",
+      "child": "Add child"
+    },
+    "roles": {
+      "parent": "Parent",
+      "child": "Child"
+    },
+    "addMember": "Add a family member",
+    "edit": "Edit {{name}}",
+    "name": "Name",
+    "enterName": "Enter a name",
+    "role": "Role",
+    "color": "Color",
+    "remove": "Remove",
+    "confirmRemove": "Remove {{name}} from the family? Their to-dos will become unassigned."
+  },
+  "todos": {
+    "title": "To-dos",
+    "allDone": "All done",
+    "open_one": "{{count}} open",
+    "open_other": "{{count}} open",
+    "showFor": "Show to-dos for",
+    "all": "All",
+    "unassigned": "Unassigned",
+    "addPlaceholder": "Add a to-do…",
+    "new": "New to-do",
+    "add": "Add to-do",
+    "for": "For",
+    "empty": "Nothing on the list.",
+    "emptyFor": "Nothing on {{name}}'s list.",
+    "emptyUnassigned": "No unassigned to-dos.",
+    "clearDone_one": "Clear {{count}} done",
+    "clearDone_other": "Clear {{count}} done"
+  },
+  "week": {
+    "title": "This week",
+    "addEvent": "+ Add event",
+    "empty": "Nothing planned this week.",
+    "allDay": "All day",
+    "editSeries": "Edit series",
+    "skipToday": "Skip today",
+    "skipTomorrow": "Skip tomorrow",
+    "skipDate": "Skip {{date}}",
+    "savedOutside": "Saved, starting {{date}}. It will show here in that week."
+  },
+  "event": {
+    "new": "New event",
+    "edit": "Edit event",
+    "editRepeating": "Edit repeating event",
+    "seriesNote": "Changes apply to every date in the series.",
+    "title": "Title",
+    "titlePlaceholder": "What's happening?",
+    "enterTitle": "Enter a title",
+    "day": "Day",
+    "otherDay": "Other",
+    "otherDayLabel": "Other day",
+    "time": "Time",
+    "timeOrAllDay": "Time or all day",
+    "setTime": "Set time",
+    "from": "From",
+    "to": "to",
+    "toOptional": "To (optional)",
+    "who": "Who",
+    "whoLabel": "Who's taking part",
+    "deleteSeries": "Delete series",
+    "confirmDelete": "Delete \"{{title}}\"?",
+    "confirmDeleteSeries": "Delete every date of \"{{title}}\"?",
+    "pickRepeatDay": "Pick at least one day to repeat on",
+    "untilBeforeStart": "The repeat end date is before the first day",
+    "endBeforeStart": "The end time is before the start time"
+  },
+  "repeat": {
+    "label": "Repeat",
+    "none": "Doesn't repeat",
+    "daily": "Daily",
+    "everyWeekdayOption": "Every weekday (Mon–Fri)",
+    "weeklyOption": "Weekly",
+    "howOften": "How often",
+    "onDays": "On these days",
+    "untilLabel": "Until",
+    "untilOptional": "Repeat until (optional)",
+    "noEnd": "No end",
+    "optional": "optional",
+    "interval": {
+      "week_one": "Every week",
+      "week_other": "Every {{count}} weeks",
+      "month_one": "Every month",
+      "month_other": "Every {{count}} months"
+    },
+    "weekly": {
+      "days": "Every {{days}}",
+      "daysEvery": "Every {{count}} weeks on {{days}}",
+      "allDays": "Every day",
+      "allDaysEvery": "Every {{count}} weeks on all days",
+      "weekdays": "Every weekday",
+      "weekdaysEvery": "Every {{count}} weeks on weekdays"
+    },
+    "monthly": {
+      "monthly": "Monthly on {{on}}",
+      "every": "Every {{count}} months on {{on}}",
+      "onDate": "the {{day}}",
+      "onWeekday": "the {{week}} {{weekday}}"
+    },
+    "dayOfMonth_ordinal_one": "{{count}}st",
+    "dayOfMonth_ordinal_two": "{{count}}nd",
+    "dayOfMonth_ordinal_few": "{{count}}rd",
+    "dayOfMonth_ordinal_other": "{{count}}th",
+    "week": {
+      "1": "first",
+      "2": "second",
+      "3": "third",
+      "4": "fourth",
+      "last": "last"
+    },
+    "until": "{{text}} until {{date}}"
+  },
+  "screen": {
+    "title": "Family screen",
+    "subtitle": "Turn this device into the shared screen in the family room.",
+    "heroTitle": "Use this device as the family screen",
+    "heroText": "Shows the clock, this week and to-dos. Kids can tick off to-dos without logging in; you unlock it with your PIN.",
+    "setPinFirst": "Set your unlock PIN first, or you'll need your password to leave the family screen.",
+    "start": "Start family screen",
+    "starting": "Starting…",
+    "startFailed": "Couldn't start the family screen",
+    "pin": {
+      "title": "Your unlock PIN",
+      "subtitle": "Used to leave the family screen",
+      "set": "✓ Set",
+      "notSet": "Not set",
+      "disabled": "Disabled",
+      "change": "Change",
+      "setAction": "Set",
+      "enterNew": "Enter a new PIN (4–8 digits)",
+      "confirm": "Enter it again to confirm",
+      "mismatch": "The PINs didn't match. Start over.",
+      "saveFailed": "Couldn't save your PIN"
+    },
+    "install": {
+      "title": "Full-screen app",
+      "subtitle": "Open it like an app, without the browser bar",
+      "how": "How",
+      "step1": "On the tablet, sign in here and tap <b>Start family screen</b>.",
+      "step2": "iPad: tap <b>Share → Add to Home Screen</b>. Android: tap <b>⋮ → Install app</b>.",
+      "step3": "Open FamPlan from the home screen. It fills the screen and stays awake during the day."
+    }
+  },
+  "night": {
+    "title": "Night mode",
+    "subtitle": "Dims the family screen to a quiet clock at night",
+    "starts": "Night starts",
+    "ends": "Night ends",
+    "sameTime": "Start and end can't be the same time",
+    "wake": "Wake the screen",
+    "tapToWake": "Tap to wake"
+  },
+  "unlock": {
+    "title": "Unlock family screen",
+    "who": "Who's unlocking?",
+    "enterPin": "{{name}}, enter your PIN",
+    "noPinShort": "No PIN set.",
+    "usePassword": "Use password instead",
+    "confirmPassword": "This closes the family screen. A parent will need to sign in with their password. Continue?",
+    "loadFailed": "Couldn't load parents",
+    "failed": "Couldn't unlock. Try again.",
+    "wrongPin_one": "Wrong PIN. {{count}} attempt left before it's disabled.",
+    "wrongPin_other": "Wrong PIN. {{count}} attempts left before it's disabled.",
+    "locked_one": "Too many wrong attempts. Try again in {{count}} minute.",
+    "locked_other": "Too many wrong attempts. Try again in {{count}} minutes.",
+    "disabled": "This PIN is disabled after too many wrong attempts. Use your password instead.",
+    "noPin": "No PIN set. Use your password instead."
+  },
+  "switch": {
+    "failedTitle": "Couldn't switch accounts",
+    "failedText": "A parent needs to sign in and try again.",
+    "switching": "Switching…"
+  },
+  "pin": {
+    "digitsEntered_one": "{{count}} digit entered",
+    "digitsEntered_other": "{{count}} digits entered"
+  },
+  "errors": {
+    "supabaseConfig": "Supabase isn't configured (VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY)",
+    "loadMembers": "Couldn't load family members",
+    "addMember": "Couldn't add the family member",
+    "saveMember": "Couldn't save the changes",
+    "removeMember": "Couldn't remove the family member",
+    "loadTodos": "Couldn't load to-dos",
+    "addTodo": "Couldn't add the to-do",
+    "updateTodo": "Couldn't update the to-do",
+    "clearTodos": "Couldn't clear done to-dos",
+    "loadEvents": "Couldn't load events",
+    "addEvent": "Couldn't add the event",
+    "saveEvent": "Couldn't save the event",
+    "saveEventMembers": "The event was saved, but not who's taking part",
+    "deleteEvent": "Couldn't delete the event",
+    "skipDate": "Couldn't skip that date",
+    "saveSettings": "Couldn't save the settings"
+  }
+}

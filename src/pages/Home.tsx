@@ -1,7 +1,9 @@
 import { Navigate } from "react-router-dom";
 import { SignInButton, useAuth } from "@clerk/clerk-react";
+import { useTranslation } from "react-i18next";
 
 function Home() {
+  const { t } = useTranslation()
   const { isLoaded, isSignedIn } = useAuth()
 
   if (!isLoaded) {
@@ -15,9 +17,9 @@ function Home() {
   return (
       <section className="hero">
           <h1>FamPlan</h1>
-          <p>Plan the week together — schedules, chores and to-dos for the whole family in one place.</p>
+          <p>{t("home.tagline")}</p>
           <SignInButton>
-              <button className="primary">Get started</button>
+              <button className="primary">{t("home.getStarted")}</button>
           </SignInButton>
       </section>
   )

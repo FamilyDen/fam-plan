@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import MemberAvatar from "./MemberAvatar.tsx";
 import type { FamilyMember } from "../lib/familyMembers.ts";
 import { useTodos } from "../lib/todos.ts";
+import { useTranslation } from "react-i18next";
 
 // Family to-dos on the dashboard: add one at the top (optionally for one or more family members, picked
 // once you start typing), tap a row to tick it off, and clear the done ones. "Unassigned" shows to-dos for nobody
@@ -10,6 +11,7 @@ import { useTodos } from "../lib/todos.ts";
 const UNASSIGNED = "unassigned"
 
 function TodosCard({ members }: { members: FamilyMember[] }) {
+  const { t } = useTranslation()
   const { todos, loading, error, add, setDone, clearDone } = useTodos()
   const [title, setTitle] = useState("")
   const [assignedTo, setAssignedTo] = useState<string[]>([])
@@ -60,17 +62,17 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
   return (
       <section className="panel todos-card">
           <div className="panel-head">
-              <h2>To-dos</h2>
-              {!loading && !error && <span className="muted">{open.length === 0 ? "All done" : `${open.length} open`}</span>}
+              <h2>{t("todos.title")}</h2>
+              {!loading && !error && <span className="muted">{open.length === 0 ? t("todos.allDone") : t("todos.open", { count: open.length })}</span>}
           </div>
 
           {error && <p className="error">{error}</p>}
-          {loading && !error && <p className="muted">Loading…</p>}
+          {loading && !error && <p className="muted">{t("common.loading")}</p>}
 
           {!loading && !error && (
               <>
                   {members.length > 0 && (
-                      <div className="todo-filter" role="radiogroup" aria-label="Show to-dos for">
+                      <div className="todo-filter" role="radiogroup" aria-label={t("todos.showFor")}>
                           <button
                               type="button"
                               role="radio"
@@ -78,7 +80,7 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
                               className={`todo-filter-all${activeFilter === null ? " selected" : ""}`}
                               onClick={() => changeFilter(null)}
                           >
-                              All
+                              {t("todos.all")}
                           </button>
                           <button
                               type="button"
@@ -87,7 +89,7 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
                               className={`todo-filter-all${activeFilter === UNASSIGNED ? " selected" : ""}`}
                               onClick={() => changeFilter(activeFilter === UNASSIGNED ? null : UNASSIGNED)}
                           >
-                              Unassigned
+                              {t("todos.unassigned")}
                           </button>
                           {members.map((member) => (
                               <button
@@ -111,15 +113,15 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
                           <input
                               value={title}
                               onChange={(e) => setTitle(e.target.value)}
-                              placeholder="Add a to-do…"
-                              aria-label="New to-do"
+                              placeholder={t("todos.addPlaceholder")}
+                              aria-label={t("todos.new")}
                               maxLength={120}
                           />
-                          <button className="primary" type="submit" disabled={saving || !title.trim()} aria-label="Add to-do">+</button>
+                          <button className="primary" type="submit" disabled={saving || !title.trim()} aria-label={t("todos.add")}>+</button>
                       </div>
                       {title.trim() && members.length > 0 && (
-                          <div className="todo-assignees" role="group" aria-label="For">
-                              <span className="muted">For</span>
+                          <div className="todo-assignees" role="group" aria-label={t("todos.for")}>
+                              <span className="muted">{t("todos.for")}</span>
                               {members.map((member) => (
                                   <button
                                       key={member.id}
@@ -139,8 +141,8 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
 
                   {visible.length === 0 && (
                       <p className="muted empty-note">
-                          {filteredMember ? `Nothing on ${filteredMember.name}'s list.`
-                              : activeFilter === UNASSIGNED ? "No unassigned to-dos." : "Nothing on the list."}
+                          {filteredMember ? t("todos.emptyFor", { name: filteredMember.name })
+                              : activeFilter === UNASSIGNED ? t("todos.emptyUnassigned") : t("todos.empty")}
                       </p>
                   )}
                   <ul className="todo-list">
@@ -168,7 +170,7 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
                   </ul>
                   {done.length > 0 && (
                       <button className="link-button" onClick={async () => setMessage(await clearDone(visible.map((t) => t.id)))}>
-                          Clear {done.length} done
+                          {t("todos.clearDone", { count: done.length })}
                       </button>
                   )}
               </>

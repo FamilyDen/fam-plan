@@ -29,6 +29,21 @@ kids use the **family screen** without logging in. Live at [wefamplan.com](https
   checked by `api/kiosk-exit.ts` and stored only as a salted hash in Clerk private metadata.
 - Code, routes and API paths still use the older name "kiosk" for the family screen.
 
+## Languages
+
+The app is available in **English** and **Danish** (i18next; texts in `src/i18n/locales/*.json`):
+
+- **Which language:** your own choice (stored on your Clerk account), else the **family language**
+  (`family_settings.language`, set by parents; also used by the family screen), else the browser's language.
+  Both are changed from the avatar menu under **Language**.
+- **Formats follow the language:** dates, 24-hour times and the first day of the week come from the locale in
+  `LANGUAGES` (`src/i18n/index.ts`). Form values (`<input type="date|time">`) always use `2026-10-03` / `17:30`.
+- Clerk's own screens (sign-in, account, family settings) use Clerk's translation for the same language,
+  loaded only when that language is in use.
+- **Adding a language:** add `src/i18n/locales/<code>.json` (copy `en.json`), an entry in `LANGUAGES`, and the
+  Clerk translation in `CLERK_LOCALIZATIONS` (`src/components/AppProviders.tsx`), if Clerk has one.
+  `src/i18n/translations.test.ts` fails if a text or a plural form is missing.
+
 ## Getting started
 
 ```bash

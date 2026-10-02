@@ -4,6 +4,7 @@ import { toDateInput } from "./dates.ts";
 import { useLiveRefresh } from "./realtime.ts";
 import { occurrencesIn, type Occurrence, type RepeatRule } from "./recurrence.ts";
 import { useSupabase } from "./supabase.ts";
+import i18n from "../i18n/index.ts";
 
 // An event as stored: one-off, or a repeating series (starts_at/ends_at describe its first occurrence).
 export type FamilyEvent = RepeatRule & {
@@ -60,7 +61,7 @@ export function useEvents(from: Date, to: Date) {
 
   const reload = useCallback(async () => {
     if (!supabase) {
-      setError("Supabase isn't configured (VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY)")
+      setError(i18n.t("errors.supabaseConfig"))
       setLoading(false)
       return
     }
@@ -76,7 +77,7 @@ export function useEvents(from: Date, to: Date) {
             + `and(repeat.not.is.null,starts_at.lt."${toIso}",or(repeat_until.is.null,repeat_until.gte.${fromDate}))`)
     if (error) {
       console.error(error)
-      setError("Couldn't load events")
+      setError(i18n.t("errors.loadEvents"))
     } else {
       setEvents((data as unknown as EventRow[]).map(({ event_members, event_skips, ...event }) => ({
         ...event,
@@ -131,13 +132,13 @@ export function useEvents(from: Date, to: Date) {
         .single()
     if (error) {
       console.error(error)
-      return "Couldn't add the event"
+      return i18n.t("errors.addEvent")
     }
     const membersError = await setMembers(data.id, input.memberIds)
     if (membersError) {
       console.error(membersError)
       await supabase!.from("events").delete().eq("id", data.id)
-      return "Couldn't add the event"
+      return i18n.t("errors.addEvent")
     }
     await reload()
     return null
@@ -148,13 +149,13 @@ export function useEvents(from: Date, to: Date) {
     const { data, error } = await supabase!.from("events").update(toRow(input)).eq("id", id).select("id")
     if (error || !data?.length) {
       console.error(error ?? "No rows changed")
-      return "Couldn't save the event"
+      return i18n.t("errors.saveEvent")
     }
     const membersError = await setMembers(id, input.memberIds)
     await reload()
     if (membersError) {
       console.error(membersError)
-      return "The event was saved, but not who's taking part"
+      return i18n.t("errors.saveEventMembers")
     }
     return null
   }, [supabase, setMembers, reload])
@@ -164,7 +165,7 @@ export function useEvents(from: Date, to: Date) {
     const { data, error } = await supabase!.from("events").delete().eq("id", id).select("id")
     if (error || !data?.length) {
       console.error(error ?? "No rows changed")
-      return "Couldn't delete the event"
+      return i18n.t("errors.deleteEvent")
     }
     await reload()
     return null
@@ -175,7 +176,7 @@ export function useEvents(from: Date, to: Date) {
     const { error } = await supabase!.from("event_skips").insert({ event_id: id, skip_date: date })
     if (error) {
       console.error(error)
-      return "Couldn't skip that date"
+      return i18n.t("errors.skipDate")
     }
     await reload()
     return null

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import FieldIcon from "./FieldIcon.tsx";
 import type { FamilySettings } from "../lib/familySettings.ts";
+import { useTranslation } from "react-i18next";
 
 type NightModeRowProps = {
   settings: FamilySettings
@@ -13,6 +14,7 @@ const SAVED_NOTE_MS = 2000
 // Night mode edited right in its row: a switch for on/off and the from/to times inline.
 // Changes save on their own shortly after the last edit.
 function NightModeRow({ settings, onSave }: NightModeRowProps) {
+  const { t } = useTranslation()
   const [draft, setDraft] = useState(settings)
   const [state, setState] = useState<"idle" | "saving" | "saved" | string>("idle") // or an error message
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -33,7 +35,7 @@ function NightModeRow({ settings, onSave }: NightModeRowProps) {
       return // a time field is half-typed
     }
     if (next.nightMode && next.nightStart === next.nightEnd) {
-      setState("Start and end can't be the same time")
+      setState(t("night.sameTime"))
       return
     }
     timer.current = setTimeout(async () => {
@@ -48,16 +50,16 @@ function NightModeRow({ settings, onSave }: NightModeRowProps) {
     }, AUTOSAVE_MS)
   }
 
-  const status = state === "saving" ? "Saving…" : state === "saved" ? "Saved ✓" : state === "idle" ? null : state
+  const status = state === "saving" ? t("common.saving") : state === "saved" ? t("common.saved") : state === "idle" ? null : state
 
   return (
       <div className="settings-row">
           <div className="settings-row-main night-row">
               <span className="settings-row-icon"><FieldIcon name="moon" /></span>
               <div className="settings-row-text">
-                  <span className="settings-row-title">Night mode</span>
+                  <span className="settings-row-title">{t("night.title")}</span>
                   <span className={state !== "idle" && state !== "saving" && state !== "saved" ? "error" : "muted"}>
-                      {status ?? "Dims the family screen to a quiet clock at night"}
+                      {status ?? t("night.subtitle")}
                   </span>
               </div>
               <div className={`night-times${draft.nightMode ? "" : " off"}`}>
@@ -66,7 +68,7 @@ function NightModeRow({ settings, onSave }: NightModeRowProps) {
                       value={draft.nightStart}
                       onChange={(e) => change({ ...draft, nightStart: e.target.value })}
                       disabled={!draft.nightMode}
-                      aria-label="Night starts"
+                      aria-label={t("night.starts")}
                   />
                   <span className="muted">–</span>
                   <input
@@ -74,14 +76,14 @@ function NightModeRow({ settings, onSave }: NightModeRowProps) {
                       value={draft.nightEnd}
                       onChange={(e) => change({ ...draft, nightEnd: e.target.value })}
                       disabled={!draft.nightMode}
-                      aria-label="Night ends"
+                      aria-label={t("night.ends")}
                   />
               </div>
               <button
                   type="button"
                   role="switch"
                   aria-checked={draft.nightMode}
-                  aria-label="Night mode"
+                  aria-label={t("night.title")}
                   className={`switch${draft.nightMode ? " on" : ""}`}
                   onClick={() => change({ ...draft, nightMode: !draft.nightMode })}
               >

@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
+import AppProviders from './components/AppProviders.tsx'
+import './i18n/index.ts'
 import './index.css'
-import {ClerkProvider} from "@clerk/clerk-react";
-import { BrowserRouter } from "react-router-dom";
 
 const PUBLISHABLE_KEY = import.meta.env.MODE === 'production' ?
     import.meta.env.VITE_CLERK_PRODUCTION_PUBLISHABLE_KEY :
@@ -15,10 +15,8 @@ if (!PUBLISHABLE_KEY) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ClerkProvider>
+    <AppProviders publishableKey={PUBLISHABLE_KEY}>
+      <App />
+    </AppProviders>
   </StrictMode>,
 )
