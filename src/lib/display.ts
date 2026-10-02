@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 
-// Wall-screen behaviour for the kiosk: a ticking clock, keeping the screen awake, and night dimming.
+// Family screen behaviour: a ticking clock, keeping the screen awake, and night dimming.
 
-// Night mode hours on the kiosk (local time): dim from NIGHT_START until NIGHT_END.
-export const NIGHT_START_HOUR = 22
-export const NIGHT_END_HOUR = 6
-
-export function isNight(date: Date) {
-  const hour = date.getHours()
-  return hour >= NIGHT_START_HOUR || hour < NIGHT_END_HOUR
+// Whether `date` falls in the night-mode window "HH:MM"–"HH:MM" (local time). The window may cross
+// midnight (22:00–06:00); equal start and end means no night at all.
+export function isNight(date: Date, start: string, end: string) {
+  const minutes = (time: string) => {
+    const [h, m] = time.split(":").map(Number)
+    return h * 60 + m
+  }
+  const now = date.getHours() * 60 + date.getMinutes()
+  const from = minutes(start)
+  const to = minutes(end)
+  if (from === to) {
+    return false
+  }
+  return from < to ? now >= from && now < to : now >= from || now < to
 }
 
 // The current time, updated at the start of every minute.

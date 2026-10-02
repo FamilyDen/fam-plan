@@ -3,7 +3,7 @@ import { useOrganization } from "@clerk/clerk-react";
 
 const LOCALE = "en-GB"
 
-// Header for the wall screen: a large clock and date, the family name, and a discreet Parent button.
+// Header for the family screen: a large clock and date, the family name, and a discreet Unlock button.
 function KioskHeader({ now }: { now: Date }) {
   const { organization } = useOrganization()
 
@@ -23,7 +23,7 @@ function KioskHeader({ now }: { now: Date }) {
                   <NavLink to="/dashboard">Home</NavLink>
                   <NavLink to="/family">Family</NavLink>
                   {/* The kiosk gets no account or family menus; a parent unlocks with their PIN to take over. */}
-                  <NavLink to="/kiosk/unlock">Parent</NavLink>
+                  <NavLink to="/kiosk/unlock">Unlock</NavLink>
               </nav>
           </div>
       </header>
