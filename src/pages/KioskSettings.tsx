@@ -5,7 +5,9 @@ import NightModeRow from "../components/NightModeRow.tsx";
 import PinPad from "../components/PinPad.tsx";
 import StartKioskButton from "../components/StartKioskButton.tsx";
 import { useFamilySettings } from "../lib/familySettings.ts";
+import { formatLongDate, formatTime } from "../lib/dates.ts";
 import { useApi, useIsFamilyAdmin } from "../lib/kiosk.ts";
+import { Trans, useTranslation } from "react-i18next";
 
 type PinStatus = { hasPin: boolean, disabled: boolean }
 type OpenRow = "pin" | "install" | null
@@ -14,6 +16,7 @@ type OpenRow = "pin" | "install" | null
 // your unlock PIN, the night mode hours (edited inline, saved automatically), and how to install it as a full-screen app.
 // ("Family screen" is the family's kiosk account; the route and API keep the kiosk name.)
 function KioskSettings() {
+  const { t } = useTranslation()
   const isFamilyAdmin = useIsFamilyAdmin()
   const api = useApi()
   const { settings, save: saveSettings } = useFamilySettings()
@@ -40,20 +43,17 @@ function KioskSettings() {
   return (
       <div className="family-screen-page">
           <header className="page-header">
-              <h1>Family screen</h1>
-              <p className="muted">Turn this device into the shared screen in the family room.</p>
+              <h1>{t("screen.title")}</h1>
+              <p className="muted">{t("screen.subtitle")}</p>
           </header>
 
           <section className="panel screen-hero">
               <ScreenPreview />
               <div>
-                  <h2>Use this device as the family screen</h2>
-                  <p className="muted">
-                      Shows the clock, this week and to-dos. Kids can tick off to-dos without logging in;
-                      you unlock it with your PIN.
-                  </p>
+                  <h2>{t("screen.heroTitle")}</h2>
+                  <p className="muted">{t("screen.heroText")}</p>
                   {status && !pinReady && (
-                      <p className="warning-note">Set your unlock PIN first, or you'll need your password to leave the family screen.</p>
+                      <p className="warning-note">{t("screen.setPinFirst")}</p>
                   )}
                   <StartKioskButton />
               </div>
@@ -62,14 +62,14 @@ function KioskSettings() {
           <section className="panel settings-list">
               <SettingsRow
                   icon="lock"
-                  title="Your unlock PIN"
-                  subtitle="Used to leave the family screen"
+                  title={t("screen.pin.title")}
+                  subtitle={t("screen.pin.subtitle")}
                   value={status && (
                       <span className={`badge ${pinReady ? "badge-success" : "badge-warning"}`}>
-                          {status.disabled ? "Disabled" : status.hasPin ? "✓ Set" : "Not set"}
+                          {status.disabled ? t("screen.pin.disabled") : status.hasPin ? t("screen.pin.set") : t("screen.pin.notSet")}
                       </span>
                   )}
-                  action={pinReady ? "Change" : "Set"}
+                  action={pinReady ? t("screen.pin.change") : t("screen.pin.setAction")}
                   open={open === "pin"}
                   onToggle={() => toggle("pin")}
               >
@@ -83,16 +83,16 @@ function KioskSettings() {
 
               <SettingsRow
                   icon="tablet"
-                  title="Full-screen app"
-                  subtitle="Open it like an app, without the browser bar"
-                  action="How"
+                  title={t("screen.install.title")}
+                  subtitle={t("screen.install.subtitle")}
+                  action={t("screen.install.how")}
                   open={open === "install"}
                   onToggle={() => toggle("install")}
               >
                   <ol className="install-steps">
-                      <li>On the tablet, sign in here and tap <strong>Start family screen</strong>.</li>
-                      <li>iPad: tap <strong>Share → Add to Home Screen</strong>. Android: tap <strong>⋮ → Install app</strong>.</li>
-                      <li>Open FamPlan from the home screen. It fills the screen and stays awake during the day.</li>
+                      <li><Trans i18nKey="screen.install.step1" components={{ b: <strong /> }} /></li>
+                      <li><Trans i18nKey="screen.install.step2" components={{ b: <strong /> }} /></li>
+                      <li><Trans i18nKey="screen.install.step3" components={{ b: <strong /> }} /></li>
                   </ol>
               </SettingsRow>
           </section>
@@ -113,6 +113,7 @@ type SettingsRowProps = {
 
 // One row of the settings list; its editor expands in place below it.
 function SettingsRow({ icon, title, subtitle, value, action, open, onToggle, children }: SettingsRowProps) {
+  const { t } = useTranslation()
   return (
       <div className={`settings-row${open ? " open" : ""}`}>
           <div className="settings-row-main">
@@ -122,7 +123,7 @@ function SettingsRow({ icon, title, subtitle, value, action, open, onToggle, chi
                   <span className="muted">{subtitle}</span>
               </div>
               {value}
-              <button className="link-button" onClick={onToggle} aria-expanded={open}>{open ? "Close" : action}</button>
+              <button className="link-button" onClick={onToggle} aria-expanded={open}>{open ? t("common.close") : action}</button>
           </div>
           {open && <div className="settings-row-body">{children}</div>}
       </div>
@@ -131,6 +132,7 @@ function SettingsRow({ icon, title, subtitle, value, action, open, onToggle, chi
 
 // Enter a new PIN twice on the pad; saves it on the server (which clears any lockout).
 function PinEditor({ onSaved, onCancel }: { onSaved: (status: PinStatus) => void, onCancel: () => void }) {
+  const { t } = useTranslation()
   const api = useApi()
   const [firstPin, setFirstPin] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
@@ -143,13 +145,13 @@ function PinEditor({ onSaved, onCancel }: { onSaved: (status: PinStatus) => void
     }
     if (pin !== firstPin) {
       setFirstPin(null)
-      setMessage("The PINs didn't match. Start over.")
+      setMessage(t("screen.pin.mismatch"))
       return
     }
     const response = await api("/api/kiosk-pin", { method: "POST", body: JSON.stringify({ pin }) })
     setFirstPin(null)
     if (!response.ok) {
-      setMessage("Couldn't save your PIN")
+      setMessage(t("screen.pin.saveFailed"))
       return
     }
     onSaved(await response.json())
@@ -157,10 +159,10 @@ function PinEditor({ onSaved, onCancel }: { onSaved: (status: PinStatus) => void
 
   return (
       <div className="pin-editor">
-          <p>{firstPin === null ? "Enter a new PIN (4–8 digits)" : "Enter it again to confirm"}</p>
+          <p>{firstPin === null ? t("screen.pin.enterNew") : t("screen.pin.confirm")}</p>
           <PinPad onSubmit={enter} />
           {message && <p className="error">{message}</p>}
-          <button type="button" onClick={onCancel}>Cancel</button>
+          <button type="button" onClick={onCancel}>{t("common.cancel")}</button>
       </div>
   )
 }
@@ -170,8 +172,8 @@ function ScreenPreview() {
   const now = new Date()
   return (
       <div className="screen-preview" aria-hidden>
-          <span className="screen-preview-time">{now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23" })}</span>
-          <span className="screen-preview-date">{now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}</span>
+          <span className="screen-preview-time">{formatTime(now)}</span>
+          <span className="screen-preview-date">{formatLongDate(now)}</span>
           <div className="screen-preview-cards">
               <span><i /><i /><i /></span>
               <span><i /><i /><i /></span>

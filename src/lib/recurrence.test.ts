@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import i18n from "../i18n/index.ts";
 import { toDateInput, toTimeInput } from "./dates.ts";
 import { ALL_DAYS, describeRepeat, fitRuleToDay, NO_REPEAT, occurrencesIn, weeklyPreset, WORKWEEK, type RepeatRule } from "./recurrence.ts";
 
@@ -134,5 +135,19 @@ describe("fitRuleToDay", () => {
 
   it("leaves weekly rules alone", () => {
     expect(fitRuleToDay(football, at(10, 31))).toBe(football)
+  })
+})
+
+describe("describeRepeat in Danish", () => {
+  afterEach(() => i18n.changeLanguage("en"))
+
+  it("uses Danish words, ordinals and weekday names", async () => {
+    await i18n.changeLanguage("da")
+    expect(describeRepeat(football, at(10, 6))).toBe("Hver tirs., tors.")
+    expect(describeRepeat({ ...NO_REPEAT, repeat: "weekly", repeat_weekdays: WORKWEEK }, at(10, 6))).toBe("Alle hverdage")
+    expect(describeRepeat({ ...NO_REPEAT, repeat: "weekly", repeat_weekdays: [1], repeat_interval: 2 }, at(10, 6))).toBe("Hver 2. uge: man.")
+    expect(describeRepeat({ ...NO_REPEAT, repeat: "monthly_date" }, at(10, 15))).toBe("Hver måned den 15.")
+    expect(describeRepeat({ ...NO_REPEAT, repeat: "monthly_weekday", repeat_week: -1, repeat_until: "2027-06-30" }, at(10, 30)))
+        .toBe("Hver måned den sidste fredag indtil 30. jun. 2027")
   })
 })

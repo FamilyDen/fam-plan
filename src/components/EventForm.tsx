@@ -4,8 +4,10 @@ import MemberAvatar from "./MemberAvatar.tsx";
 import RepeatPicker from "./RepeatPicker.tsx";
 import type { FamilyMember } from "../lib/familyMembers.ts";
 import type { FamilyEvent, FamilyEventInput } from "../lib/events.ts";
+import { currentLocale } from "../i18n/index.ts";
 import { addDays, fromInputs, startOfDay, toDateInput, toTimeInput } from "../lib/dates.ts";
 import { fitRuleToDay, NO_REPEAT, type RepeatRule } from "../lib/recurrence.ts";
+import { useTranslation } from "react-i18next";
 
 type EventFormProps = {
   members: FamilyMember[]
@@ -16,12 +18,11 @@ type EventFormProps = {
   onClose: () => void
 }
 
-const LOCALE = "en-GB"
-
 // Add or edit an event in a sheet over the dashboard: a title, then Day / Time / Repeat / Who rows,
 // and Delete / Cancel / Save at the bottom. For a repeating event the day is the series' first day,
 // and saving changes the whole series.
 function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps) {
+  const { t } = useTranslation()
   const today = startOfDay(new Date())
   const start = event ? new Date(event.starts_at) : null
   const [title, setTitle] = useState(event?.title ?? "")
@@ -68,21 +69,21 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
   async function submit(e: FormEvent) {
     e.preventDefault()
     if (!title.trim()) {
-      setError("Enter a title")
+      setError(t("event.enterTitle"))
       return
     }
     if (rule.repeat === "weekly" && !rule.repeat_weekdays?.length) {
-      setError("Pick at least one day to repeat on")
+      setError(t("event.pickRepeatDay"))
       return
     }
     if (rule.repeat && rule.repeat_until && rule.repeat_until < day) {
-      setError("The repeat end date is before the first day")
+      setError(t("event.untilBeforeStart"))
       return
     }
     const startsAt = fromInputs(day, allDay ? "00:00" : startTime)
     const endsAt = !allDay && endTime ? fromInputs(day, endTime) : null
     if (endsAt && endsAt < startsAt) {
-      setError("The end time is before the start time")
+      setError(t("event.endBeforeStart"))
       return
     }
     setSaving(true)
@@ -96,7 +97,7 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
   }
 
   async function remove() {
-    if (!onDelete || !window.confirm(event?.repeat ? `Delete every date of "${event.title}"?` : `Delete "${event?.title}"?`)) {
+    if (!onDelete || !window.confirm(event?.repeat ? t("event.confirmDeleteSeries", { title: event.title }) : t("event.confirmDelete", { title: event?.title }))) {
       return
     }
     setSaving(true)
@@ -113,8 +114,8 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
       <div className="overlay" onClick={onClose}>
           <form className="event-sheet" onSubmit={submit} onClick={(e) => e.stopPropagation()}>
               <div className="event-sheet-top">
-                  <span className="muted">{event ? (event.repeat ? "Edit repeating event" : "Edit event") : "New event"}</span>
-                  <button type="button" className="icon-button" onClick={onClose} aria-label="Close">
+                  <span className="muted">{event ? (event.repeat ? t("event.editRepeating") : t("event.edit")) : t("event.new")}</span>
+                  <button type="button" className="icon-button" onClick={onClose} aria-label={t("common.close")}>
                       <FieldIcon name="x" />
                   </button>
               </div>
@@ -123,17 +124,17 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
                   <input
                       value={title}
                       onChange={(e) => { setTitle(e.target.value); setError(null) }}
-                      placeholder="What's happening?"
-                      aria-label="Title"
+                      placeholder={t("event.titlePlaceholder")}
+                      aria-label={t("event.title")}
                       maxLength={80}
                       autoFocus={!event}
                   />
-                  {event?.repeat && <p className="muted">Changes apply to every date in the series.</p>}
+                  {event?.repeat && <p className="muted">{t("event.seriesNote")}</p>}
               </div>
 
               <div className="event-fields">
-                  <span className="field-label field-label-top"><FieldIcon name="calendar" />Day</span>
-                  <div className="day-strip" role="radiogroup" aria-label="Day">
+                  <span className="field-label field-label-top"><FieldIcon name="calendar" />{t("event.day")}</span>
+                  <div className="day-strip" role="radiogroup" aria-label={t("event.day")}>
                       {stripDays.map((d) => {
                         const value = toDateInput(d)
                         const isToday = value === toDateInput(today)
@@ -146,7 +147,7 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
                                 className={`day-tile${day === value ? " selected" : ""}`}
                                 onClick={() => changeDay(value)}
                             >
-                                <span className="day-tile-name">{isToday ? "Today" : d.toLocaleDateString(LOCALE, { weekday: "short" })}</span>
+                                <span className="day-tile-name">{isToday ? t("dates.today") : d.toLocaleDateString(currentLocale(), { weekday: "short" })}</span>
                                 <span className="day-tile-number">{d.getDate()}</span>
                             </button>
                         )
@@ -160,12 +161,12 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
                       >
                           {dayInStrip ? (
                               <>
-                                  <span className="day-tile-name">Other</span>
+                                  <span className="day-tile-name">{t("event.otherDay")}</span>
                                   <FieldIcon name="calendarPlus" size={20} />
                               </>
                           ) : (
                               <>
-                                  <span className="day-tile-name">{fromInputs(day).toLocaleDateString(LOCALE, { month: "short" })}</span>
+                                  <span className="day-tile-name">{fromInputs(day).toLocaleDateString(currentLocale(), { month: "short" })}</span>
                                   <span className="day-tile-number">{fromInputs(day).getDate()}</span>
                               </>
                           )}
@@ -176,37 +177,37 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
                           type="date"
                           value={day}
                           onChange={(e) => e.target.value && changeDay(e.target.value)}
-                          aria-label="Other day"
+                          aria-label={t("event.otherDayLabel")}
                           tabIndex={-1}
                       />
                   </div>
 
-                  <span className="field-label"><FieldIcon name="clock" />Time</span>
+                  <span className="field-label"><FieldIcon name="clock" />{t("event.time")}</span>
                   <div className="field-row">
-                      <div className="segmented" role="radiogroup" aria-label="Time or all day">
+                      <div className="segmented" role="radiogroup" aria-label={t("event.timeOrAllDay")}>
                           <button type="button" role="radio" aria-checked={!allDay} className={allDay ? "" : "selected"} onClick={() => setAllDay(false)}>
-                              Set time
+                              {t("event.setTime")}
                           </button>
                           <button type="button" role="radio" aria-checked={allDay} className={allDay ? "selected" : ""} onClick={() => setAllDay(true)}>
-                              All day
+                              {t("week.allDay")}
                           </button>
                       </div>
                       {!allDay && (
                           <>
-                              <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} aria-label="From" required />
-                              <span className="muted">to</span>
-                              <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} aria-label="To (optional)" />
+                              <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} aria-label={t("event.from")} required />
+                              <span className="muted">{t("event.to")}</span>
+                              <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} aria-label={t("event.toOptional")} />
                           </>
                       )}
                   </div>
 
-                  <span className="field-label field-label-top"><FieldIcon name="repeat" />Repeat</span>
+                  <span className="field-label field-label-top"><FieldIcon name="repeat" />{t("repeat.label")}</span>
                   <RepeatPicker day={fromInputs(day)} value={rule} onChange={setRule} />
 
                   {members.length > 0 && (
                       <>
-                          <span className="field-label field-label-top"><FieldIcon name="users" />Who</span>
-                          <div className="who-picker" role="group" aria-label="Who's taking part">
+                          <span className="field-label field-label-top"><FieldIcon name="users" />{t("event.who")}</span>
+                          <div className="who-picker" role="group" aria-label={t("event.whoLabel")}>
                               {members.map((member) => {
                                 const selected = memberIds.includes(member.id)
                                 return (
@@ -232,12 +233,12 @@ function EventForm({ members, event, onSave, onDelete, onClose }: EventFormProps
               <div className="event-sheet-footer">
                   {onDelete && (
                       <button type="button" className="text-danger-button" onClick={remove} disabled={saving}>
-                          <FieldIcon name="trash" size={16} />{event?.repeat ? "Delete series" : "Delete"}
+                          <FieldIcon name="trash" size={16} />{event?.repeat ? t("event.deleteSeries") : t("common.delete")}
                       </button>
                   )}
                   <span className="spacer" />
-                  <button type="button" onClick={onClose}>Cancel</button>
-                  <button className="primary" type="submit" disabled={saving}>{saving ? "Saving…" : "Save"}</button>
+                  <button type="button" onClick={onClose}>{t("common.cancel")}</button>
+                  <button className="primary" type="submit" disabled={saving}>{saving ? t("common.saving") : t("common.save")}</button>
               </div>
           </form>
       </div>

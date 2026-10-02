@@ -1,0 +1,256 @@
+{
+  "common": {
+    "add": "Tilføj",
+    "back": "Tilbage",
+    "cancel": "Annuller",
+    "close": "Luk",
+    "delete": "Slet",
+    "loading": "Indlæser…",
+    "ok": "OK",
+    "save": "Gem",
+    "saved": "Gemt ✓",
+    "saving": "Gemmer…",
+    "signIn": "Log ind"
+  },
+  "nav": {
+    "home": "Hjem",
+    "members": "Medlemmer",
+    "unlock": "Lås op"
+  },
+  "home": {
+    "tagline": "Planlæg ugen sammen – aftaler, pligter og opgaver for hele familien samlet ét sted.",
+    "getStarted": "Kom i gang"
+  },
+  "dashboard": {
+    "greeting": "Hej {{name}} 👋",
+    "greetingNoName": "Hej 👋",
+    "createFamily": "Opret jeres familie for at begynde at planlægge sammen, eller vælg en i menuen ovenfor."
+  },
+  "dates": {
+    "today": "I dag",
+    "tomorrow": "I morgen"
+  },
+  "menu": {
+    "open": "Konto og indstillinger",
+    "you": "Dig",
+    "familyScreen": "Familieskærm",
+    "parentsInvites": "Forældre og invitationer",
+    "switchFamily": "Skift familie",
+    "createFamily": "Opret en familie",
+    "language": "Sprog",
+    "manageAccount": "Administrer konto",
+    "signOut": "Log ud"
+  },
+  "language": {
+    "yours": "Dit sprog",
+    "family": "Familiens sprog",
+    "sameAsFamily": "Samme som familien ({{language}})",
+    "automatic": "Automatisk",
+    "familyNote": "Bruges af familieskærmen og af alle, der ikke har valgt deres eget."
+  },
+  "members": {
+    "title": "Medlemmer",
+    "count_one": "{{count}} medlem",
+    "count_other": "{{count}} medlemmer",
+    "groups": {
+      "parent": "Forældre",
+      "child": "Børn"
+    },
+    "add": {
+      "parent": "Tilføj forælder",
+      "child": "Tilføj barn"
+    },
+    "roles": {
+      "parent": "Forælder",
+      "child": "Barn"
+    },
+    "addMember": "Tilføj et familiemedlem",
+    "edit": "Rediger {{name}}",
+    "name": "Navn",
+    "enterName": "Skriv et navn",
+    "role": "Rolle",
+    "color": "Farve",
+    "remove": "Fjern",
+    "confirmRemove": "Fjern {{name}} fra familien? Opgaver, der er tildelt dem, vil ikke længere være tildelt nogen."
+  },
+  "todos": {
+    "title": "Opgaver",
+    "allDone": "Alt klaret",
+    "open_one": "{{count}} åben",
+    "open_other": "{{count}} åbne",
+    "showFor": "Vis opgaver for",
+    "all": "Alle",
+    "unassigned": "Ikke tildelt",
+    "addPlaceholder": "Tilføj en opgave…",
+    "new": "Ny opgave",
+    "add": "Tilføj opgave",
+    "for": "Til",
+    "empty": "Intet på listen.",
+    "emptyFor": "Intet på {{name}}s liste.",
+    "emptyUnassigned": "Ingen opgaver uden en ansvarlig.",
+    "clearDone_one": "Ryd {{count}} færdig",
+    "clearDone_other": "Ryd {{count}} færdige"
+  },
+  "week": {
+    "title": "Denne uge",
+    "addEvent": "+ Tilføj aftale",
+    "empty": "Intet planlagt denne uge.",
+    "allDay": "Hele dagen",
+    "editSeries": "Rediger serien",
+    "skipToday": "Spring over i dag",
+    "skipTomorrow": "Spring over i morgen",
+    "skipDate": "Spring over {{date}}",
+    "savedOutside": "Gemt fra {{date}}. Den vises her i den uge."
+  },
+  "event": {
+    "new": "Ny aftale",
+    "edit": "Rediger aftale",
+    "editRepeating": "Rediger gentagen aftale",
+    "seriesNote": "Ændringer gælder for alle datoer i serien.",
+    "title": "Titel",
+    "titlePlaceholder": "Hvad skal der ske?",
+    "enterTitle": "Skriv en titel",
+    "day": "Dag",
+    "otherDay": "Anden",
+    "otherDayLabel": "Anden dag",
+    "time": "Tid",
+    "timeOrAllDay": "Tidspunkt eller hele dagen",
+    "setTime": "Vælg tid",
+    "from": "Fra",
+    "to": "til",
+    "toOptional": "Til (valgfrit)",
+    "who": "Hvem",
+    "whoLabel": "Hvem deltager",
+    "deleteSeries": "Slet serien",
+    "confirmDelete": "Slet \"{{title}}\"?",
+    "confirmDeleteSeries": "Slet alle datoer for \"{{title}}\"?",
+    "pickRepeatDay": "Vælg mindst én dag at gentage på",
+    "untilBeforeStart": "Slutdatoen for gentagelsen er før den første dag",
+    "endBeforeStart": "Sluttidspunktet er før starttidspunktet"
+  },
+  "repeat": {
+    "label": "Gentag",
+    "none": "Gentages ikke",
+    "daily": "Dagligt",
+    "everyWeekdayOption": "Alle hverdage (man.–fre.)",
+    "weeklyOption": "Ugentligt",
+    "howOften": "Hvor ofte",
+    "onDays": "På disse dage",
+    "untilLabel": "Indtil",
+    "untilOptional": "Gentag indtil (valgfrit)",
+    "noEnd": "Ingen slutdato",
+    "optional": "valgfrit",
+    "interval": {
+      "week_one": "Hver uge",
+      "week_other": "Hver {{count}}. uge",
+      "month_one": "Hver måned",
+      "month_other": "Hver {{count}}. måned"
+    },
+    "weekly": {
+      "days": "Hver {{days}}",
+      "daysEvery": "Hver {{count}}. uge: {{days}}",
+      "allDays": "Hver dag",
+      "allDaysEvery": "Hver {{count}}. uge, alle dage",
+      "weekdays": "Alle hverdage",
+      "weekdaysEvery": "Hver {{count}}. uge på hverdage"
+    },
+    "monthly": {
+      "monthly": "Hver måned den {{on}}",
+      "every": "Hver {{count}}. måned den {{on}}",
+      "onDate": "{{day}}",
+      "onWeekday": "{{week}} {{weekday}}"
+    },
+    "dayOfMonth_ordinal_other": "{{count}}.",
+    "week": {
+      "1": "første",
+      "2": "anden",
+      "3": "tredje",
+      "4": "fjerde",
+      "last": "sidste"
+    },
+    "until": "{{text}} indtil {{date}}"
+  },
+  "screen": {
+    "title": "Familieskærm",
+    "subtitle": "Gør denne enhed til den fælles skærm i stuen.",
+    "heroTitle": "Brug denne enhed som familieskærm",
+    "heroText": "Viser uret, denne uge og opgaverne. Børnene kan krydse opgaver af uden at logge ind; du låser op med din pinkode.",
+    "setPinFirst": "Vælg din pinkode først, ellers skal du bruge din adgangskode for at forlade familieskærmen.",
+    "start": "Start familieskærm",
+    "starting": "Starter…",
+    "startFailed": "Kunne ikke starte familieskærmen",
+    "pin": {
+      "title": "Din pinkode",
+      "subtitle": "Bruges til at forlade familieskærmen",
+      "set": "✓ Valgt",
+      "notSet": "Ikke valgt",
+      "disabled": "Deaktiveret",
+      "change": "Skift",
+      "setAction": "Vælg",
+      "enterNew": "Indtast en ny pinkode (4–8 cifre)",
+      "confirm": "Indtast den igen for at bekræfte",
+      "mismatch": "Pinkoderne var ikke ens. Start forfra.",
+      "saveFailed": "Kunne ikke gemme din pinkode"
+    },
+    "install": {
+      "title": "Fuldskærms-app",
+      "subtitle": "Åbn den som en app, uden browserens adresselinje",
+      "how": "Sådan",
+      "step1": "Log ind her på tabletten, og tryk på <b>Start familieskærm</b>.",
+      "step2": "iPad: tryk på <b>Del → Føj til hjemmeskærm</b>. Android: tryk på <b>⋮ → Installer app</b>.",
+      "step3": "Åbn FamPlan fra hjemmeskærmen. Den fylder hele skærmen og forbliver tændt om dagen."
+    }
+  },
+  "night": {
+    "title": "Nattilstand",
+    "subtitle": "Dæmper familieskærmen til et diskret ur om natten",
+    "starts": "Natten starter",
+    "ends": "Natten slutter",
+    "sameTime": "Start og slut kan ikke være samme tidspunkt",
+    "wake": "Væk skærmen",
+    "tapToWake": "Tryk for at vække"
+  },
+  "unlock": {
+    "title": "Lås familieskærmen op",
+    "who": "Hvem låser op?",
+    "enterPin": "{{name}}, indtast din pinkode",
+    "noPinShort": "Ingen pinkode valgt.",
+    "usePassword": "Brug adgangskode i stedet",
+    "confirmPassword": "Det lukker familieskærmen. En forælder skal logge ind med sin adgangskode. Fortsæt?",
+    "loadFailed": "Kunne ikke hente forældrene",
+    "failed": "Kunne ikke låse op. Prøv igen.",
+    "wrongPin_one": "Forkert pinkode. {{count}} forsøg tilbage, før den deaktiveres.",
+    "wrongPin_other": "Forkert pinkode. {{count}} forsøg tilbage, før den deaktiveres.",
+    "locked_one": "For mange forkerte forsøg. Prøv igen om {{count}} minut.",
+    "locked_other": "For mange forkerte forsøg. Prøv igen om {{count}} minutter.",
+    "disabled": "Pinkoden er deaktiveret efter for mange forkerte forsøg. Brug din adgangskode i stedet.",
+    "noPin": "Ingen pinkode valgt. Brug din adgangskode i stedet."
+  },
+  "switch": {
+    "failedTitle": "Kunne ikke skifte konto",
+    "failedText": "En forælder skal logge ind og prøve igen.",
+    "switching": "Skifter…"
+  },
+  "pin": {
+    "digitsEntered_one": "{{count}} ciffer indtastet",
+    "digitsEntered_other": "{{count}} cifre indtastet"
+  },
+  "errors": {
+    "supabaseConfig": "Supabase er ikke sat op (VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY)",
+    "loadMembers": "Kunne ikke hente familiemedlemmerne",
+    "addMember": "Kunne ikke tilføje familiemedlemmet",
+    "saveMember": "Kunne ikke gemme ændringerne",
+    "removeMember": "Kunne ikke fjerne familiemedlemmet",
+    "loadTodos": "Kunne ikke hente opgaverne",
+    "addTodo": "Kunne ikke tilføje opgaven",
+    "updateTodo": "Kunne ikke opdatere opgaven",
+    "clearTodos": "Kunne ikke rydde de færdige opgaver",
+    "loadEvents": "Kunne ikke hente aftalerne",
+    "addEvent": "Kunne ikke tilføje aftalen",
+    "saveEvent": "Kunne ikke gemme aftalen",
+    "saveEventMembers": "Aftalen blev gemt, men ikke hvem der deltager",
+    "deleteEvent": "Kunne ikke slette aftalen",
+    "skipDate": "Kunne ikke springe den dato over",
+    "saveSettings": "Kunne ikke gemme indstillingerne"
+  }
+}

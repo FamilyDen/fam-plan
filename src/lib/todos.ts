@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useOrganization } from "@clerk/clerk-react";
 import { useLiveRefresh } from "./realtime.ts";
 import { useSupabase } from "./supabase.ts";
+import i18n from "../i18n/index.ts";
 
 export type Todo = {
   id: string
@@ -34,7 +35,7 @@ export function useTodos() {
 
   const reload = useCallback(async () => {
     if (!supabase) {
-      setError("Supabase isn't configured (VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY)")
+      setError(i18n.t("errors.supabaseConfig"))
       setLoading(false)
       return
     }
@@ -49,7 +50,7 @@ export function useTodos() {
         .order("created_at")
     if (error) {
       console.error(error)
-      setError("Couldn't load to-dos")
+      setError(i18n.t("errors.loadTodos"))
     } else {
       setTodos((data as TodoRow[]).map(fromRow))
       setError(null)
@@ -75,7 +76,7 @@ export function useTodos() {
         .single()
     if (error) {
       console.error(error)
-      return "Couldn't add the to-do"
+      return i18n.t("errors.addTodo")
     }
     if (memberIds.length > 0) {
       const { error: membersError } = await supabase!
@@ -84,7 +85,7 @@ export function useTodos() {
       if (membersError) {
         console.error(membersError)
         await supabase!.from("todos").delete().eq("id", data.id)
-        return "Couldn't add the to-do"
+        return i18n.t("errors.addTodo")
       }
     }
     await reload()
@@ -98,7 +99,7 @@ export function useTodos() {
     if (error || !data?.length) {
       console.error(error ?? "No rows changed")
       setTodos((current) => current.map((t) => (t.id === id ? { ...t, done: !done } : t)))
-      return "Couldn't update the to-do"
+      return i18n.t("errors.updateTodo")
     }
     return null
   }, [supabase])
@@ -112,7 +113,7 @@ export function useTodos() {
     const { error } = await supabase!.from("todos").delete().in("id", doneIds)
     if (error) {
       console.error(error)
-      return "Couldn't clear done to-dos"
+      return i18n.t("errors.clearTodos")
     }
     await reload()
     return null

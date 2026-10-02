@@ -3,6 +3,8 @@ import { Link, Navigate } from "react-router-dom";
 import { useClerk } from "@clerk/clerk-react";
 import PinPad from "../components/PinPad.tsx";
 import { useApi, useIsKiosk, useSwitchAccount } from "../lib/kiosk.ts";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n/index.ts";
 
 type Parent = { userId: string, name: string, imageUrl: string, hasPin: boolean }
 
@@ -11,23 +13,24 @@ type UnlockError = { error: string, attemptsLeft?: number, lockedUntil?: number 
 function describeError(result: UnlockError) {
   switch (result.error) {
     case "wrong_pin":
-      return `Wrong PIN. ${result.attemptsLeft} attempts left before it's disabled.`
+      return i18n.t("unlock.wrongPin", { count: result.attemptsLeft })
     case "locked": {
       const minutes = Math.max(1, Math.ceil(((result.lockedUntil ?? 0) - Date.now()) / 60000))
-      return `Too many wrong attempts. Try again in ${minutes} minute${minutes === 1 ? "" : "s"}.`
+      return i18n.t("unlock.locked", { count: minutes })
     }
     case "disabled":
-      return "This PIN is disabled after too many wrong attempts. Use your password instead."
+      return i18n.t("unlock.disabled")
     case "no_pin":
-      return "No PIN set. Use your password instead."
+      return i18n.t("unlock.noPin")
     default:
-      return "Couldn't unlock. Try again."
+      return i18n.t("unlock.failed")
   }
 }
 
 // Kiosk only: a parent picks themselves and enters their PIN to take over the screen.
 // Kiosk mode stays on until the PIN is verified by the server.
 function KioskUnlock() {
+  const { t } = useTranslation()
   const isKiosk = useIsKiosk()
   const api = useApi()
   const switchAccount = useSwitchAccount()
@@ -44,8 +47,8 @@ function KioskUnlock() {
     api("/api/kiosk-parents")
         .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
         .then(({ parents }) => setParents(parents))
-        .catch(() => setMessage("Couldn't load parents"))
-  }, [api, isKiosk])
+        .catch(() => setMessage(t("unlock.loadFailed")))
+  }, [api, isKiosk, t])
 
   if (!isKiosk) {
     return <Navigate to="/dashboard" replace />
@@ -53,7 +56,7 @@ function KioskUnlock() {
 
   // Ends kiosk mode without a PIN, so a parent must be at hand to sign in; confirm to avoid accidental taps.
   function signInWithPassword() {
-    if (window.confirm("This closes the family screen. A parent will need to sign in with their password. Continue?")) {
+    if (window.confirm(t("unlock.confirmPassword"))) {
       signOut({ redirectUrl: "/dashboard" })
     }
   }
@@ -78,19 +81,19 @@ function KioskUnlock() {
       await switchAccount(result)
     } catch (e) {
       console.error(e)
-      setMessage("Couldn't unlock. Try again.")
+      setMessage(t("unlock.failed"))
       setBusy(false)
     }
   }
 
   return (
       <div className="kiosk-unlock">
-          <h1>Unlock family screen</h1>
+          <h1>{t("unlock.title")}</h1>
 
           {!selected && (
               <>
-                  <p className="muted">Who's unlocking?</p>
-                  {parents === null && !message && <p className="muted">Loading…</p>}
+                  <p className="muted">{t("unlock.who")}</p>
+                  {parents === null && !message && <p className="muted">{t("common.loading")}</p>}
                   <div className="parent-picker">
                       {parents?.map((parent) => (
                           <button key={parent.userId} onClick={() => { setSelected(parent); setMessage(null) }}>
@@ -104,17 +107,17 @@ function KioskUnlock() {
 
           {selected && (
               <>
-                  <p>{selected.name}, enter your PIN</p>
-                  {selected.hasPin ? <PinPad onSubmit={unlock} disabled={busy} /> : <p className="muted">No PIN set.</p>}
-                  <button onClick={() => { setSelected(null); setMessage(null) }}>Back</button>
+                  <p>{t("unlock.enterPin", { name: selected.name })}</p>
+                  {selected.hasPin ? <PinPad onSubmit={unlock} disabled={busy} /> : <p className="muted">{t("unlock.noPinShort")}</p>}
+                  <button onClick={() => { setSelected(null); setMessage(null) }}>{t("common.back")}</button>
               </>
           )}
 
           {message && <p className="error">{message}</p>}
 
           <div className="kiosk-unlock-footer">
-              <button onClick={signInWithPassword}>Use password instead</button>
-              <Link to="/dashboard">Cancel</Link>
+              <button onClick={signInWithPassword}>{t("unlock.usePassword")}</button>
+              <Link to="/dashboard">{t("common.cancel")}</Link>
           </div>
       </div>
   )
