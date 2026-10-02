@@ -1382,3 +1382,177 @@ button.week-event:not(:disabled):hover {
     background-color: #ffffff;
   }
 }
+
+/* ---- Top bar: family brand, Home/Members tabs, settings menu ---- */
+
+.family-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  color: inherit;
+}
+
+.family-brand-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 9px;
+  background-color: #646cff;
+  color: #fff;
+  object-fit: cover;
+}
+
+.family-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.family-brand-name {
+  overflow: hidden;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.family-brand-app {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.55;
+}
+
+.site-header {
+  gap: 1rem;
+}
+
+.site-header nav {
+  flex-shrink: 0;
+}
+
+.nav-tabs {
+  display: inline-flex;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
+.nav-tabs a {
+  padding: 0.3rem 0.95rem;
+  border-radius: 999px;
+  color: inherit;
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+.site-header nav .nav-tabs a.active {
+  background-color: #242424;
+  text-decoration: none;
+  opacity: 1;
+  box-shadow: 0 0 0 1px rgba(128, 128, 128, 0.35);
+}
+
+.settings-menu {
+  position: relative;
+}
+
+.settings-menu-button[aria-expanded="true"] {
+  opacity: 1;
+  color: #646cff;
+}
+
+.settings-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 20;
+  width: 17rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 12px;
+  background-color: #2b2b2b;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  animation: member-expand 0.12s ease-out;
+}
+
+.settings-menu-heading {
+  overflow: hidden;
+  padding: 0.5rem 0.65rem 0.35rem;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-menu-section + .settings-menu-section {
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.settings-menu-title {
+  padding: 0.35rem 0.65rem 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.55;
+}
+
+.settings-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  text-align: left;
+}
+
+.settings-menu-item:hover,
+.settings-menu-item:focus-visible {
+  background-color: rgba(128, 128, 128, 0.18);
+  outline: none;
+}
+
+.settings-menu-icon {
+  display: inline-flex;
+  width: 18px;
+  opacity: 0.75;
+}
+
+@media (prefers-color-scheme: light) {
+  .site-header nav .nav-tabs a.active {
+    background-color: #ffffff;
+  }
+
+  .settings-menu-panel {
+    background-color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media (max-width: 640px) {
+  /* The tabs live in the bottom tab bar on phones. */
+  .site-header .nav-tabs {
+    display: none;
+  }
+
+  .family-brand-badge {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+
+  .family-brand-name {
+    font-size: 0.98rem;
+  }
+}
