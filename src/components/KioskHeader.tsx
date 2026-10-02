@@ -21,7 +21,7 @@ function KioskHeader({ now }: { now: Date }) {
               {organization && <span className="kiosk-family">{organization.name}</span>}
               <nav>
                   <NavLink to="/dashboard">Home</NavLink>
-                  <NavLink to="/family">Family</NavLink>
+                  <NavLink to="/family">Members</NavLink>
                   {/* The kiosk gets no account or family menus; a parent unlocks with their PIN to take over. */}
                   <NavLink to="/kiosk/unlock">Unlock</NavLink>
               </nav>

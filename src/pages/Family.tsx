@@ -62,7 +62,7 @@ function Family() {
   return (
       <div className="family">
           <header className="family-header">
-              <h1>Family</h1>
+              <h1>Members</h1>
               <p className="muted">
                   {organization.name}
                   {!loading && !error && ` · ${members.length} ${members.length === 1 ? "member" : "members"}`}
