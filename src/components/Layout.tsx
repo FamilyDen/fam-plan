@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { OrganizationSwitcher, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import FieldIcon from "./FieldIcon.tsx";
 import KioskHeader from "./KioskHeader.tsx";
 import NightScreen from "./NightScreen.tsx";
 import { useNow, useWakeLock } from "../lib/display.ts";
@@ -22,9 +23,12 @@ function Layout() {
               <Link to="/" className="brand">FamPlan</Link>
               <nav>
                   <SignedIn>
-                      <NavLink to="/dashboard">Dashboard</NavLink>
-                      <NavLink to="/family">Family</NavLink>
-                      {isFamilyAdmin && <NavLink to="/kiosk" end>Family screen</NavLink>}
+                      {/* On phones these links move to the tab bar at the bottom. */}
+                      <span className="nav-links">
+                          <NavLink to="/dashboard">Dashboard</NavLink>
+                          <NavLink to="/family">Family</NavLink>
+                          {isFamilyAdmin && <NavLink to="/kiosk" end>Family screen</NavLink>}
+                      </span>
                       <OrganizationSwitcher
                           hidePersonal
                           afterCreateOrganizationUrl="/dashboard"
@@ -48,6 +52,13 @@ function Layout() {
           <main className="site-main">
               <Outlet />
           </main>
+          <SignedIn>
+              <nav className="tab-bar" aria-label="Main">
+                  <NavLink to="/dashboard"><FieldIcon name="home" size={24} />Home</NavLink>
+                  <NavLink to="/family"><FieldIcon name="users" size={24} />Family</NavLink>
+                  {isFamilyAdmin && <NavLink to="/kiosk" end><FieldIcon name="tablet" size={24} />Screen</NavLink>}
+              </nav>
+          </SignedIn>
       </>
   )
 }
