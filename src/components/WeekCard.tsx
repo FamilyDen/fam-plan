@@ -3,9 +3,11 @@ import EventForm from "./EventForm.tsx";
 import MemberAvatar from "./MemberAvatar.tsx";
 import type { FamilyMember } from "../lib/familyMembers.ts";
 import { useEvents, type EventOccurrence, type FamilyEvent, type FamilyEventInput } from "../lib/events.ts";
-import { addDays, dayLabel, startOfDay, toDateInput, toTimeInput } from "../lib/dates.ts";
+import { addDays, dayLabel, formatTime, startOfDay, toDateInput } from "../lib/dates.ts";
+import i18n from "../i18n/index.ts";
 import { describeRepeat } from "../lib/recurrence.ts";
 import { useIsFamilyAdmin } from "../lib/kiosk.ts";
+import { useTranslation } from "react-i18next";
 
 const DAYS = 7
 
@@ -13,6 +15,7 @@ const DAYS = 7
 // their dates. Parents can add, edit and delete events (and skip a date of a repeating one); everyone
 // else (including the kiosk) sees them read-only.
 function WeekCard({ members }: { members: FamilyMember[] }) {
+  const { t } = useTranslation()
   const today = useToday()
   const isFamilyAdmin = useIsFamilyAdmin()
   const { occurrences, loading, error, add, update, remove, skip } = useEvents(today, addDays(today, DAYS))
@@ -30,7 +33,7 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
     const failure = id ? await update(id, input) : await add(input)
     if (!failure) {
       const outside = input.startsAt >= addDays(today, DAYS) || (!input.rule.repeat && input.startsAt < today)
-      setNotice(outside ? `Saved, starting ${dayLabel(input.startsAt, today)}. It will show here in that week.` : null)
+      setNotice(outside ? t("week.savedOutside", { date: dayLabel(input.startsAt, today) }) : null)
     }
     return failure
   }
@@ -52,17 +55,17 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
   return (
       <section className="panel week-card">
           <div className="panel-head">
-              <h2>This week</h2>
+              <h2>{t("week.title")}</h2>
               {isFamilyAdmin && !loading && !error && (
-                  <button className="panel-action" onClick={() => { setNotice(null); setEditing("new") }}>+ Add event</button>
+                  <button className="panel-action" onClick={() => { setNotice(null); setEditing("new") }}>{t("week.addEvent")}</button>
               )}
           </div>
           {error && <p className="error">{error}</p>}
-          {loading && !error && <p className="muted">Loading…</p>}
+          {loading && !error && <p className="muted">{t("common.loading")}</p>}
 
           {!loading && !error && (
               <>
-                  {days.length === 0 && <p className="muted empty-note">Nothing planned this week.</p>}
+                  {days.length === 0 && <p className="muted empty-note">{t("week.empty")}</p>}
                   {days.map(({ day, occurrences }) => (
                       <div key={toDateInput(day)} className="week-day">
                           <h3>{dayLabel(day, today)}</h3>
@@ -102,9 +105,9 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
                       <p className="muted">
                           {dayLabel(choosing.startsAt, today)} · ↻ {describeRepeat(choosing.event, new Date(choosing.event.starts_at))}
                       </p>
-                      <button onClick={() => skipDate(choosing)}>Skip {skipLabel(dayLabel(choosing.startsAt, today))}</button>
-                      <button onClick={() => { setEditing(choosing.event); setChoosing(null) }}>Edit series</button>
-                      <button onClick={() => setChoosing(null)}>Cancel</button>
+                      <button onClick={() => skipDate(choosing)}>{skipLabel(choosing.startsAt, today)}</button>
+                      <button onClick={() => { setEditing(choosing.event); setChoosing(null) }}>{t("week.editSeries")}</button>
+                      <button onClick={() => setChoosing(null)}>{t("common.cancel")}</button>
                   </div>
               </div>
           )}
@@ -122,17 +125,19 @@ function WeekCard({ members }: { members: FamilyMember[] }) {
   )
 }
 
-// "Skip today", "Skip tomorrow", "Skip Fri 9 Oct".
-function skipLabel(day: string) {
-  return day === "Today" || day === "Tomorrow" ? day.toLowerCase() : day
+// "Skip today", "Skip tomorrow", "Skip Fri 9 Oct" (or the same in the current language).
+function skipLabel(date: Date, today: Date) {
+  const key = toDateInput(date) === toDateInput(today) ? "week.skipToday"
+      : toDateInput(date) === toDateInput(addDays(today, 1)) ? "week.skipTomorrow" : "week.skipDate"
+  return i18n.t(key, { date: dayLabel(date, today) })
 }
 
 function timeLabel({ event, startsAt, endsAt }: EventOccurrence) {
   if (event.all_day) {
-    return "All day"
+    return i18n.t("week.allDay")
   }
-  const start = toTimeInput(startsAt)
-  return endsAt ? `${start}–${toTimeInput(endsAt)}` : start
+  const start = formatTime(startsAt)
+  return endsAt ? `${start}–${formatTime(endsAt)}` : start
 }
 
 // Start of today, kept current: the kiosk screen stays on overnight, so "Today" must move at midnight.

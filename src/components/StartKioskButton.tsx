@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useApi, useSwitchAccount } from "../lib/kiosk.ts";
+import { useTranslation } from "react-i18next";
 
 // Lets a family admin turn this device into the family screen (the family's kiosk account).
 function StartKioskButton() {
+  const { t } = useTranslation()
   const api = useApi()
   const switchAccount = useSwitchAccount()
   const [starting, setStarting] = useState(false)
@@ -19,7 +21,7 @@ function StartKioskButton() {
       await switchAccount(await response.json())
     } catch (e) {
       console.error(e)
-      setError("Couldn't start the family screen")
+      setError(t("screen.startFailed"))
       setStarting(false)
     }
   }
@@ -27,7 +29,7 @@ function StartKioskButton() {
   return (
       <>
           <button className="primary" onClick={startKiosk} disabled={starting}>
-              {starting ? "Starting…" : "Start family screen"}
+              {starting ? t("screen.starting") : t("screen.start")}
           </button>
           {error && <p className="error">{error}</p>}
       </>

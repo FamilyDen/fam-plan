@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useOrganization } from "@clerk/clerk-react";
 import { useLiveRefresh } from "./realtime.ts";
 import { useSupabase } from "./supabase.ts";
+import i18n from "../i18n/index.ts";
 
 export type FamilyRole = "parent" | "child"
 
@@ -31,7 +32,7 @@ export function useFamilyMembers() {
 
   const reload = useCallback(async () => {
     if (!supabase) {
-      setError("Supabase isn't configured (VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY)")
+      setError(i18n.t("errors.supabaseConfig"))
       setLoading(false)
       return
     }
@@ -47,7 +48,7 @@ export function useFamilyMembers() {
         .order("created_at")
     if (error) {
       console.error(error)
-      setError("Couldn't load family members")
+      setError(i18n.t("errors.loadMembers"))
     } else {
       setMembers(data as FamilyMember[])
       setError(null)
@@ -78,17 +79,17 @@ export function useFamilyMembers() {
 
   const add = useCallback((input: FamilyMemberInput) => run(
       () => supabase!.from("family_members").insert(input).select("id"),
-      "Couldn't add the family member",
+      i18n.t("errors.addMember"),
   ), [run, supabase])
 
   const update = useCallback((id: string, input: FamilyMemberInput) => run(
       () => supabase!.from("family_members").update(input).eq("id", id).select("id"),
-      "Couldn't save the changes",
+      i18n.t("errors.saveMember"),
   ), [run, supabase])
 
   const remove = useCallback((id: string) => run(
       () => supabase!.from("family_members").delete().eq("id", id).select("id"),
-      "Couldn't remove the family member",
+      i18n.t("errors.removeMember"),
   ), [run, supabase])
 
   return { members, loading, error, add, update, remove }

@@ -7,8 +7,10 @@ import SettingsMenu from "./SettingsMenu.tsx";
 import { useNow, useWakeLock } from "../lib/display.ts";
 import { useFamilySettings } from "../lib/familySettings.ts";
 import { useIsKiosk } from "../lib/kiosk.ts";
+import { useTranslation } from "react-i18next";
 
 function Layout() {
+  const { t } = useTranslation()
   const isKiosk = useIsKiosk()
   useWakeLock(isKiosk)
 
@@ -25,8 +27,8 @@ function Layout() {
                   <SignedIn>
                       {/* On phones these tabs move to the tab bar at the bottom. */}
                       <span className="nav-links nav-tabs">
-                          <NavLink to="/dashboard">Home</NavLink>
-                          <NavLink to="/family">Members</NavLink>
+                          <NavLink to="/dashboard">{t("nav.home")}</NavLink>
+                          <NavLink to="/family">{t("nav.members")}</NavLink>
                       </span>
                       <SettingsMenu />
                   </SignedIn>
@@ -40,8 +42,8 @@ function Layout() {
           </main>
           <SignedIn>
               <nav className="tab-bar" aria-label="Main">
-                  <NavLink to="/dashboard"><FieldIcon name="home" size={24} />Home</NavLink>
-                  <NavLink to="/family"><FieldIcon name="users" size={24} />Members</NavLink>
+                  <NavLink to="/dashboard"><FieldIcon name="home" size={24} />{t("nav.home")}</NavLink>
+                  <NavLink to="/family"><FieldIcon name="users" size={24} />{t("nav.members")}</NavLink>
               </nav>
           </SignedIn>
       </>

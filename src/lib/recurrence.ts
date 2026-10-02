@@ -1,4 +1,5 @@
-import { addDays, startOfDay, toDateInput } from "./dates.ts";
+import i18n, { currentLocale, weekdaysInOrder } from "../i18n/index.ts";
+import { addDays, startOfDay, toDateInput, weekdayName } from "./dates.ts";
 
 // Repeat rules for events (see supabase/migrations/20261001200000_repeating_events.sql).
 // All matching is done on local dates, so a 17:00 event stays at 17:00 across daylight saving changes.
@@ -19,7 +20,6 @@ export const NO_REPEAT: RepeatRule = { repeat: null, repeat_interval: 1, repeat_
 
 type Repeatable = RepeatRule & { starts_at: string, ends_at: string | null, all_day: boolean }
 
-const LOCALE = "en-GB"
 const DAY_MS = 86_400_000
 
 function daysBetween(a: Date, b: Date) {
@@ -126,40 +126,34 @@ export function weeklyPreset(rule: RepeatRule): "daily" | "weekdays" | "weekly" 
   return "weekly"
 }
 
-const ORDINALS: Record<number, string> = { 1: "first", 2: "second", 3: "third", 4: "fourth", [-1]: "last" }
-
-function dayOfMonthLabel(n: number) {
-  const suffix = n % 10 === 1 && n !== 11 ? "st" : n % 10 === 2 && n !== 12 ? "nd" : n % 10 === 3 && n !== 13 ? "rd" : "th"
-  return `${n}${suffix}`
-}
-
-function weekdayName(weekday: number, style: "short" | "long") {
-  // 4 Jan 2026 is a Sunday, so 4 + weekday is that weekday.
-  return new Date(2026, 0, 4 + weekday).toLocaleDateString(LOCALE, { weekday: style })
-}
-
 // "Every Tue, Thu", "Every 2 weeks on Mon", "Monthly on the 15th", "Every 3 months on the last Friday"…
+// in the current language (see the "repeat" texts in i18n/locales).
 export function describeRepeat(rule: RepeatRule, firstStart: Date) {
+  const t = i18n.t.bind(i18n)
   if (!rule.repeat) {
-    return "Doesn't repeat"
+    return t("repeat.none")
   }
-  const n = Math.max(1, rule.repeat_interval)
+  const count = Math.max(1, rule.repeat_interval)
   let text: string
   if (rule.repeat === "weekly") {
-    const days = [...(rule.repeat_weekdays ?? [])].sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7)) // Monday first
-    const names = days.length === 7 ? "day"
-        : isWorkweek(days) ? "weekday"
-        : days.map((d) => weekdayName(d, "short")).join(", ")
-    text = n === 1 ? `Every ${names}` : `Every ${n} weeks on ${days.length === 7 ? "all days" : isWorkweek(days) ? "weekdays" : names}`
+    const order = weekdaysInOrder()
+    const days = [...(rule.repeat_weekdays ?? [])].sort((a, b) => order.indexOf(a) - order.indexOf(b))
+    const kind = days.length === 7 ? "allDays" : isWorkweek(days) ? "weekdays" : "days"
+    const names = days.map((d) => weekdayName(d, "short")).join(", ")
+    text = t(count === 1 ? `repeat.weekly.${kind}` : `repeat.weekly.${kind}Every`, { count, days: names })
   } else {
     const on = rule.repeat === "monthly_date"
-        ? `the ${dayOfMonthLabel(firstStart.getDate())}`
-        : `the ${ORDINALS[rule.repeat_week ?? 1]} ${weekdayName(firstStart.getDay(), "long")}`
-    text = n === 1 ? `Monthly on ${on}` : `Every ${n} months on ${on}`
+        ? t("repeat.monthly.onDate", { day: t("repeat.dayOfMonth", { count: firstStart.getDate(), ordinal: true }) })
+        : t("repeat.monthly.onWeekday", {
+          week: t(`repeat.week.${rule.repeat_week === -1 ? "last" : rule.repeat_week ?? 1}`),
+          weekday: weekdayName(firstStart.getDay(), "long"),
+        })
+    text = t(count === 1 ? "repeat.monthly.monthly" : "repeat.monthly.every", { count, on })
   }
   if (rule.repeat_until) {
     const [y, m, d] = rule.repeat_until.split("-").map(Number)
-    text += ` until ${new Date(y, m - 1, d).toLocaleDateString(LOCALE, { day: "numeric", month: "short", year: "numeric" })}`
+    const until = new Date(y, m - 1, d).toLocaleDateString(currentLocale(), { day: "numeric", month: "short", year: "numeric" })
+    text = t("repeat.until", { text, date: until })
   }
   return text
 }

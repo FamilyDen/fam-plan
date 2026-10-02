@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useSignIn } from "@clerk/clerk-react";
 import { SWITCH_TICKET_KEY, type SwitchTicket } from "../lib/kiosk.ts";
+import { useTranslation } from "react-i18next";
 
 // Finishes an account switch on the shared touch screen (parent -> kiosk, or kiosk -> parent):
 // signs in with the one-time ticket that useSwitchAccount stored before signing the previous account out.
 function SwitchAccount() {
+  const { t } = useTranslation()
   const { isLoaded, signIn, setActive } = useSignIn()
   const { isSignedIn } = useAuth()
   const navigate = useNavigate()
@@ -46,16 +48,16 @@ function SwitchAccount() {
   if (failed) {
     return (
         <section className="hero">
-            <h1>Couldn't switch accounts</h1>
-            <p>A parent needs to sign in and try again.</p>
-            <Link to="/dashboard">Sign in</Link>
+            <h1>{t("switch.failedTitle")}</h1>
+            <p>{t("switch.failedText")}</p>
+            <Link to="/dashboard">{t("common.signIn")}</Link>
         </section>
     )
   }
 
   return (
       <section className="hero">
-          <p className="muted">Switching…</p>
+          <p className="muted">{t("switch.switching")}</p>
       </section>
   )
 }
