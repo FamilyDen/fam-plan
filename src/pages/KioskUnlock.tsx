@@ -53,7 +53,7 @@ function KioskUnlock() {
 
   // Ends kiosk mode without a PIN, so a parent must be at hand to sign in; confirm to avoid accidental taps.
   function signInWithPassword() {
-    if (window.confirm("This ends kiosk mode. A parent will need to sign in with their password. Continue?")) {
+    if (window.confirm("This closes the family screen. A parent will need to sign in with their password. Continue?")) {
       signOut({ redirectUrl: "/dashboard" })
     }
   }
@@ -85,7 +85,7 @@ function KioskUnlock() {
 
   return (
       <div className="kiosk-unlock">
-          <h1>Parent unlock</h1>
+          <h1>Unlock family screen</h1>
 
           {!selected && (
               <>

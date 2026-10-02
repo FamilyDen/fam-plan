@@ -77,7 +77,6 @@ button.primary {
   font-size: 0.9rem;
 }
 
-.kiosk-settings .card,
 .kiosk-unlock {
   margin-top: 1.5rem;
 }
@@ -229,9 +228,16 @@ button.primary {
 
 .link-button {
   padding: 0.25rem 0;
+  border: none;
   background: transparent;
   color: #646cff;
   font-size: 0.9rem;
+}
+
+.link-button:focus-visible {
+  outline: 2px solid #646cff;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 .todo-assignees {
@@ -1052,4 +1058,582 @@ button.week-event:not(:disabled):hover {
   border-color: #646cff;
   background-color: rgba(100, 108, 255, 0.2);
   opacity: 1;
+}
+
+/* ---- Family screen settings page ---- */
+
+.family-screen-page .panel {
+  margin-top: 1.25rem;
+}
+
+.screen-hero {
+  display: grid;
+  grid-template-columns: 12rem minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.screen-hero h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+}
+
+.screen-hero p {
+  margin: 0 0 1rem;
+}
+
+.warning-note {
+  color: #f0b44c;
+  font-size: 0.9rem;
+}
+
+.screen-preview {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 12px;
+}
+
+.screen-preview-time {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.screen-preview-date {
+  margin-bottom: 0.6rem;
+  font-size: 0.7rem;
+  opacity: 0.65;
+}
+
+.screen-preview-cards {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 0.4rem;
+}
+
+.screen-preview-cards span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 3.5rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 6px;
+}
+
+.screen-preview-cards i {
+  height: 0.3rem;
+  border-radius: 2px;
+  background-color: rgba(128, 128, 128, 0.3);
+}
+
+.screen-preview-cards i:first-child {
+  width: 55%;
+  background-color: rgba(128, 128, 128, 0.55);
+}
+
+.screen-preview-cards i:nth-child(3) {
+  width: 70%;
+}
+
+.settings-list {
+  padding: 0;
+  overflow: hidden;
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.settings-row-main {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.4rem;
+}
+
+.settings-row-icon {
+  display: inline-flex;
+  opacity: 0.7;
+}
+
+.settings-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.9rem;
+}
+
+.settings-row-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.settings-row-body {
+  padding: 0 1.4rem 1.2rem 3.7rem;
+  animation: member-expand 0.15s ease-out;
+}
+
+.settings-row-body > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.settings-row-body p {
+  margin: 0;
+}
+
+.settings-row-body input[type="time"] {
+  padding: 0.5em 0.7em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.settings-row-body .pin-pad {
+  margin: 0;
+}
+
+.install-steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.7;
+}
+
+.badge {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.badge-success {
+  background-color: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+}
+
+.badge-warning {
+  background-color: rgba(240, 180, 76, 0.18);
+  color: #f0b44c;
+}
+
+@media (max-width: 560px) {
+  .screen-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-row-body {
+    padding-left: 1.4rem;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .badge-success {
+    color: #15803d;
+  }
+
+  .badge-warning,
+  .warning-note {
+    color: #a16207;
+  }
+}
+
+/* Night mode row: inline times and an on/off switch. */
+.night-row {
+  flex-wrap: wrap;
+}
+
+.night-times {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: opacity 0.15s;
+}
+
+.night-times.off {
+  opacity: 0.35;
+}
+
+.night-times input[type="time"] {
+  padding: 0.35em 0.5em;
+  font-size: 0.95em;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  background: transparent;
+  color: inherit;
+}
+
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.6rem;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background-color: rgba(128, 128, 128, 0.45);
+  transition: background-color 0.15s;
+}
+
+.switch span {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: transform 0.15s;
+}
+
+.switch.on {
+  background-color: #646cff;
+}
+
+.switch.on span {
+  transform: translateX(1.15rem);
+}
+
+.switch:focus-visible {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .night-times {
+    order: 3;
+    margin-left: 2.6rem;
+  }
+}
+
+/* ---- Phone navigation: slim top bar + bottom tab bar ---- */
+
+.nav-links {
+  display: contents;
+}
+
+.tab-bar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    padding: 0.6rem 0;
+  }
+
+  .site-header nav {
+    gap: 0.6rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  /* Room for the tab bar below the content. */
+  .site-main {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+
+  .tab-bar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    padding: 0.4rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(128, 128, 128, 0.25);
+    background-color: #242424;
+  }
+
+  .tab-bar a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.3rem 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: inherit;
+    opacity: 0.6;
+  }
+
+  .tab-bar a.active {
+    color: #646cff;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) and (prefers-color-scheme: light) {
+  .tab-bar {
+    background-color: #ffffff;
+  }
+}
+
+/* ---- Top bar: family brand, Home/Members tabs, settings menu ---- */
+
+.family-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  color: inherit;
+}
+
+.family-brand-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 9px;
+  background-color: #646cff;
+  color: #fff;
+  object-fit: cover;
+}
+
+.family-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.family-brand-name {
+  overflow: hidden;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.family-brand-app {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.55;
+}
+
+.site-header {
+  gap: 1rem;
+}
+
+.site-header nav {
+  flex-shrink: 0;
+}
+
+.nav-tabs {
+  display: inline-flex;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
+.nav-tabs a {
+  padding: 0.3rem 0.95rem;
+  border-radius: 999px;
+  color: inherit;
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+.site-header nav .nav-tabs a.active {
+  background-color: #242424;
+  text-decoration: none;
+  opacity: 1;
+  box-shadow: 0 0 0 1px rgba(128, 128, 128, 0.35);
+}
+
+.settings-menu {
+  position: relative;
+}
+
+/* The avatar button with a small gear badge. */
+.settings-menu-button {
+  position: relative;
+  display: inline-flex;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+}
+
+.settings-menu-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background-color: rgba(128, 128, 128, 0.3);
+  object-fit: cover;
+}
+
+.settings-menu-badge {
+  position: absolute;
+  right: -0.25rem;
+  bottom: -0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  border-radius: 50%;
+  background-color: #242424;
+}
+
+.settings-menu-button[aria-expanded="true"] .settings-menu-avatar,
+.settings-menu-button:focus-visible .settings-menu-avatar {
+  box-shadow: 0 0 0 2px #242424, 0 0 0 4px #646cff;
+}
+
+.settings-menu-button:focus-visible {
+  outline: none;
+}
+
+.settings-menu-user {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.65rem 0.7rem;
+  margin-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.settings-menu-user img {
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.settings-menu-user > div {
+  min-width: 0;
+}
+
+.settings-menu-user-name {
+  font-weight: 600;
+}
+
+.settings-menu-user-email {
+  overflow: hidden;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 20;
+  width: 17rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 12px;
+  background-color: #2b2b2b;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  animation: member-expand 0.12s ease-out;
+}
+
+.settings-menu-heading {
+  overflow: hidden;
+  padding: 0.5rem 0.65rem 0.35rem;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-menu-section + .settings-menu-section {
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.settings-menu-title {
+  padding: 0.35rem 0.65rem 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.55;
+}
+
+.settings-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  text-align: left;
+}
+
+.settings-menu-item:hover,
+.settings-menu-item:focus-visible {
+  background-color: rgba(128, 128, 128, 0.18);
+  outline: none;
+}
+
+.settings-menu-icon {
+  display: inline-flex;
+  width: 18px;
+  opacity: 0.75;
+}
+
+@media (prefers-color-scheme: light) {
+  .site-header nav .nav-tabs a.active {
+    background-color: #ffffff;
+  }
+
+  .settings-menu-panel {
+    background-color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  .settings-menu-badge {
+    background-color: #ffffff;
+  }
+
+  .settings-menu-button[aria-expanded="true"] .settings-menu-avatar,
+  .settings-menu-button:focus-visible .settings-menu-avatar {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #646cff;
+  }
+}
+
+@media (max-width: 640px) {
+  /* The tabs live in the bottom tab bar on phones. */
+  .site-header .nav-tabs {
+    display: none;
+  }
+
+  .family-brand-badge {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+
+  .family-brand-name {
+    font-size: 0.98rem;
+  }
 }

@@ -13,7 +13,7 @@ export default {
       return json({ error: "Unauthorized" }, 401)
     }
     if (!isFamilyAdmin(session)) {
-      return json({ error: "Only family admins have a kiosk PIN" }, 403)
+      return json({ error: "Only family admins have an unlock PIN" }, 403)
     }
 
     if (request.method === "GET") {

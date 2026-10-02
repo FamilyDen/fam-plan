@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useApi, useSwitchAccount } from "../lib/kiosk.ts";
 
-// Lets a family admin hand the touch screen over to the family's kiosk account.
+// Lets a family admin turn this device into the family screen (the family's kiosk account).
 function StartKioskButton() {
   const api = useApi()
   const switchAccount = useSwitchAccount()
@@ -19,7 +19,7 @@ function StartKioskButton() {
       await switchAccount(await response.json())
     } catch (e) {
       console.error(e)
-      setError("Couldn't start kiosk mode")
+      setError("Couldn't start the family screen")
       setStarting(false)
     }
   }
@@ -27,7 +27,7 @@ function StartKioskButton() {
   return (
       <>
           <button className="primary" onClick={startKiosk} disabled={starting}>
-              {starting ? "Starting…" : "Start kiosk mode"}
+              {starting ? "Starting…" : "Start family screen"}
           </button>
           {error && <p className="error">{error}</p>}
       </>

@@ -4,27 +4,34 @@ import type { FamilyMember } from "../lib/familyMembers.ts";
 import { useTodos } from "../lib/todos.ts";
 
 // Family to-dos on the dashboard: add one at the top (optionally for one or more family members, picked
-// once you start typing), tap a row to tick it off, and clear the done ones. A row of avatars filters the list to
+// once you start typing), tap a row to tick it off, and clear the done ones. "Unassigned" shows to-dos for nobody
+// in particular, and a row of avatars filters the list to
 // one person, e.g. a child checking their own chores on the kiosk. Works the same for parents and the kiosk.
+const UNASSIGNED = "unassigned"
+
 function TodosCard({ members }: { members: FamilyMember[] }) {
   const { todos, loading, error, add, setDone, clearDone } = useTodos()
   const [title, setTitle] = useState("")
   const [assignedTo, setAssignedTo] = useState<string[]>([])
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
-  const [filter, setFilter] = useState<string | null>(null) // a member id, or null for everyone
+  // A member id, UNASSIGNED for to-dos without anyone, or null for everything.
+  const [filter, setFilter] = useState<string | null>(null)
 
   const membersById = new Map(members.map((m) => [m.id, m]))
   // A filter on someone who has since been removed from the family falls back to everyone.
-  const activeFilter = filter && membersById.has(filter) ? filter : null
-  const visible = activeFilter ? todos.filter((t) => t.member_ids.includes(activeFilter)) : todos
+  const activeFilter = filter === UNASSIGNED || (filter && membersById.has(filter)) ? filter : null
+  const visible = activeFilter === UNASSIGNED
+      ? todos.filter((t) => t.member_ids.length === 0)
+      : activeFilter ? todos.filter((t) => t.member_ids.includes(activeFilter)) : todos
+  const filteredMember = activeFilter && activeFilter !== UNASSIGNED ? membersById.get(activeFilter) : undefined
   const open = visible.filter((t) => !t.done)
   const done = visible.filter((t) => t.done)
 
-  function changeFilter(memberId: string | null) {
-    setFilter(memberId)
-    // New to-dos go to the person being looked at, unless others are picked.
-    setAssignedTo(memberId ? [memberId] : [])
+  function changeFilter(next: string | null) {
+    setFilter(next)
+    // New to-dos go to the person being looked at (or nobody, under "Unassigned"), unless others are picked.
+    setAssignedTo(next && next !== UNASSIGNED ? [next] : [])
   }
 
   async function submit(event: FormEvent) {
@@ -38,7 +45,7 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
     setMessage(failure)
     if (!failure) {
       setTitle("")
-      setAssignedTo(activeFilter ? [activeFilter] : [])
+      setAssignedTo(filteredMember ? [filteredMember.id] : [])
     }
   }
 
@@ -72,6 +79,15 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
                               onClick={() => changeFilter(null)}
                           >
                               All
+                          </button>
+                          <button
+                              type="button"
+                              role="radio"
+                              aria-checked={activeFilter === UNASSIGNED}
+                              className={`todo-filter-all${activeFilter === UNASSIGNED ? " selected" : ""}`}
+                              onClick={() => changeFilter(activeFilter === UNASSIGNED ? null : UNASSIGNED)}
+                          >
+                              Unassigned
                           </button>
                           {members.map((member) => (
                               <button
@@ -123,7 +139,8 @@ function TodosCard({ members }: { members: FamilyMember[] }) {
 
                   {visible.length === 0 && (
                       <p className="muted empty-note">
-                          {activeFilter ? `Nothing on ${membersById.get(activeFilter)!.name}'s list.` : "Nothing on the list."}
+                          {filteredMember ? `Nothing on ${filteredMember.name}'s list.`
+                              : activeFilter === UNASSIGNED ? "No unassigned to-dos." : "Nothing on the list."}
                       </p>
                   )}
                   <ul className="todo-list">

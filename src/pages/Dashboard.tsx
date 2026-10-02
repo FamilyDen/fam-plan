@@ -37,7 +37,8 @@ function Dashboard() {
               <header className="page-header">
                   <h1>Hi {name} 👋</h1>
                   <p className="muted">
-                      {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · {organization.name}
+                      {/* The family's name is in the top bar. */}
+                      {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
                   </p>
               </header>
           )}
