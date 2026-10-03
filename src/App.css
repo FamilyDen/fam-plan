@@ -1,7 +1,9 @@
+/* Installed as a home-screen app on a phone, the page runs under the status bar and notch
+   (viewport-fit=cover); the safe-area insets keep content clear of them (0 in a normal browser tab). */
 #root {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 0 1rem 2rem;
+  padding: env(safe-area-inset-top) max(1rem, env(safe-area-inset-right)) 2rem max(1rem, env(safe-area-inset-left));
 }
 
 .site-header {
@@ -283,7 +285,8 @@ button.primary {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
   background: rgba(0, 0, 0, 0.55);
 }
 
@@ -632,7 +635,7 @@ button.primary {
 
 #root:has(.kiosk-display) {
   max-width: none;
-  padding: 0 1.5rem 1.5rem;
+  padding: env(safe-area-inset-top) max(1.5rem, env(safe-area-inset-right)) 1.5rem max(1.5rem, env(safe-area-inset-left));
 }
 
 .kiosk-display {
@@ -1364,7 +1367,7 @@ button.week-event:not(:disabled):hover {
     display: grid;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
-    padding: 0.4rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+    padding: 0.4rem env(safe-area-inset-right) calc(0.5rem + env(safe-area-inset-bottom)) env(safe-area-inset-left);
     border-top: 1px solid rgba(128, 128, 128, 0.25);
     background-color: #242424;
   }
@@ -1673,4 +1676,249 @@ button.week-event:not(:disabled):hover {
   margin: 0.2rem 0.65rem 0.4rem;
   font-size: 0.78rem;
   opacity: 0.55;
+}
+
+/* ---- Chores with stars ---- */
+
+.dashboard-cards .chores-card {
+  grid-column: 1 / -1;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.panel-action.active {
+  border-color: #646cff;
+  color: #646cff;
+}
+
+.chore-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.9rem;
+}
+
+.chore-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 14px;
+}
+
+.chore-column-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.chore-column-name {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.chore-column-name > span:first-child {
+  font-weight: 600;
+}
+
+.chore-column-name .muted {
+  font-size: 0.85rem;
+}
+
+.chore-column-name .all-done {
+  color: #22c55e;
+  opacity: 1;
+}
+
+.chore-star-total {
+  font-weight: 700;
+  color: #eab308;
+  white-space: nowrap;
+}
+
+.chore-goal-bar {
+  height: 0.55rem;
+  border-radius: 999px;
+  background-color: rgba(128, 128, 128, 0.2);
+  overflow: hidden;
+}
+
+.chore-goal-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background-color: #eab308;
+  transition: width 0.3s ease-out;
+}
+
+.chore-goal-text {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.chore-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chore-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.75rem 0.7rem;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.chore-check {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+.chore-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.chore-earn {
+  color: #eab308;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chore-item.done {
+  border-color: rgba(34, 197, 94, 0.5);
+  background-color: rgba(34, 197, 94, 0.15);
+}
+
+.chore-item.done .chore-check {
+  border-color: #22c55e;
+  background-color: #22c55e;
+  color: #fff;
+  opacity: 1;
+}
+
+.chore-item.just-done .chore-earn {
+  animation: star-pop 0.6s ease-out;
+}
+
+@keyframes star-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.6) rotate(-10deg); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chore-item.just-done .chore-earn {
+    animation: none;
+  }
+}
+
+.chore-celebrate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem 0;
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.chore-celebrate span {
+  font-size: 2rem;
+}
+
+.chore-manage-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chore-manage-list li + li {
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.chore-days {
+  font-size: 0.85rem;
+}
+
+.chore-stars {
+  color: #eab308;
+  letter-spacing: 0.05em;
+}
+
+.star-picker {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.star-picker button {
+  padding: 0.2rem;
+  border: none;
+  background: transparent;
+  color: rgba(128, 128, 128, 0.6);
+}
+
+.star-picker button.on {
+  color: #eab308;
+}
+
+.star-picker button.on svg {
+  fill: currentColor;
+}
+
+.goal-row input[type="number"] {
+  width: 5rem;
+}
+
+.goal-row input:not([type]) {
+  flex: 1;
+  min-width: 9rem;
+}
+
+.member-editor .goal-row input {
+  padding: 0.5em 0.7em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.kiosk-display .chore-item {
+  padding: 0.95rem 0.8rem;
+  font-size: 1.05rem;
+}
+
+.repeat-picker .segmented {
+  align-self: flex-start;
 }

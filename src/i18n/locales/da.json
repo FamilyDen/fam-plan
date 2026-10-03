@@ -91,6 +91,44 @@
     "clearDone_one": "Ryd {{count}} færdig",
     "clearDone_other": "Ryd {{count}} færdige"
   },
+  "chores": {
+    "title": "Dagens pligter",
+    "add": "+ Tilføj pligt",
+    "manage": "Administrer",
+    "empty": "Ingen pligter endnu.",
+    "emptyParent": "Ingen pligter endnu. Tilføj en, så får hvert barn en kolonne her til at krydse dem af.",
+    "noneToday": "Ingen pligter i dag",
+    "allDone": "Alt klaret!",
+    "progress_one": "{{done}} af {{count}} klaret",
+    "progress_other": "{{done}} af {{count}} klaret",
+    "starsThisWeek_one": "{{count}} stjerne denne uge",
+    "starsThisWeek_other": "{{count}} stjerner denne uge",
+    "goalProgress": "{{stars}} af {{goal}} stjerner",
+    "goalReached": "Målet er nået! 🎉",
+    "greatJob": "Godt klaret i dag!",
+    "new": "Ny pligt",
+    "edit": "Rediger pligt",
+    "titlePlaceholder": "Hvad skal gøres?",
+    "enterTitle": "Skriv en titel",
+    "pickMember": "Vælg hvem der gør det",
+    "pickDay": "Vælg mindst én dag",
+    "when": "Hvornår",
+    "whenOptions": {
+      "daily": "Hver dag",
+      "weekdays": "Hverdage",
+      "days": "Vælg dage"
+    },
+    "stars": "Stjerner",
+    "starCount_one": "{{count}} stjerne",
+    "starCount_other": "{{count}} stjerner",
+    "confirmDelete": "Slet pligten \"{{title}}\"? Stjernerne fra denne uge fjernes også.",
+    "goal": "Stjernemål",
+    "goalLabel": "Ugentligt stjernemål (valgfrit)",
+    "starsPerWeek": "stjerner om ugen",
+    "reward": "Belønning",
+    "rewardPlaceholder": "Belønning, fx vælge filmen",
+    "goalInvalid": "Stjernemålet skal være et helt tal fra 1 til 500"
+  },
   "week": {
     "title": "Denne uge",
     "addEvent": "+ Tilføj aftale",
@@ -251,6 +289,10 @@
     "saveEventMembers": "Aftalen blev gemt, men ikke hvem der deltager",
     "deleteEvent": "Kunne ikke slette aftalen",
     "skipDate": "Kunne ikke springe den dato over",
-    "saveSettings": "Kunne ikke gemme indstillingerne"
+    "saveSettings": "Kunne ikke gemme indstillingerne",
+    "loadChores": "Kunne ikke hente pligterne",
+    "updateChore": "Kunne ikke opdatere pligten",
+    "saveChore": "Kunne ikke gemme pligten",
+    "deleteChore": "Kunne ikke slette pligten"
   }
 }
