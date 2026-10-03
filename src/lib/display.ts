@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { startOfDay } from "./dates.ts";
 
 // Family screen behaviour: a ticking clock, keeping the screen awake, and night dimming.
 
@@ -67,4 +68,17 @@ export function useWakeLock(enabled: boolean) {
       lock?.release().catch(() => {})
     }
   }, [enabled])
+}
+
+// Start of today, kept current: the kiosk screen stays on overnight, so "Today" must move at midnight.
+export function useToday() {
+  const [today, setToday] = useState(() => startOfDay(new Date()))
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = startOfDay(new Date())
+      setToday((current) => (current.getTime() === now.getTime() ? current : now))
+    }, 60_000)
+    return () => clearInterval(timer)
+  }, [])
+  return today
 }

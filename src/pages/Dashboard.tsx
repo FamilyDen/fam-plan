@@ -1,4 +1,5 @@
 import { CreateOrganization, useOrganization, useUser } from "@clerk/clerk-react";
+import ChoresCard from "../components/ChoresCard.tsx";
 import TodosCard from "../components/TodosCard.tsx";
 import WeekCard from "../components/WeekCard.tsx";
 import { useFamilyMembers } from "../lib/familyMembers.ts";
@@ -50,6 +51,8 @@ function Dashboard() {
           <div className="dashboard-cards">
               <WeekCard members={members} />
               <TodosCard members={members} />
+              {/* Full width below the week and the to-dos. */}
+              <ChoresCard members={members} />
           </div>
       </div>
   )

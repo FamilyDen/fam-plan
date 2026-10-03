@@ -91,6 +91,44 @@
     "clearDone_one": "Clear {{count}} done",
     "clearDone_other": "Clear {{count}} done"
   },
+  "chores": {
+    "title": "Chores today",
+    "add": "+ Add chore",
+    "manage": "Manage",
+    "empty": "No chores yet.",
+    "emptyParent": "No chores yet. Add one, and each child gets a column here to tick them off.",
+    "noneToday": "No chores today",
+    "allDone": "All done!",
+    "progress_one": "{{done}} of {{count}} done",
+    "progress_other": "{{done}} of {{count}} done",
+    "starsThisWeek_one": "{{count}} star this week",
+    "starsThisWeek_other": "{{count}} stars this week",
+    "goalProgress": "{{stars}} of {{goal}} stars",
+    "goalReached": "Goal reached! 🎉",
+    "greatJob": "Great job today!",
+    "new": "New chore",
+    "edit": "Edit chore",
+    "titlePlaceholder": "What needs doing?",
+    "enterTitle": "Enter a title",
+    "pickMember": "Pick who does it",
+    "pickDay": "Pick at least one day",
+    "when": "When",
+    "whenOptions": {
+      "daily": "Every day",
+      "weekdays": "Weekdays",
+      "days": "Pick days"
+    },
+    "stars": "Stars",
+    "starCount_one": "{{count}} star",
+    "starCount_other": "{{count}} stars",
+    "confirmDelete": "Delete the chore \"{{title}}\"? Its stars from this week are removed too.",
+    "goal": "Star goal",
+    "goalLabel": "Weekly star goal (optional)",
+    "starsPerWeek": "stars a week",
+    "reward": "Reward",
+    "rewardPlaceholder": "Reward, e.g. pick the movie",
+    "goalInvalid": "The star goal must be a whole number from 1 to 500"
+  },
   "week": {
     "title": "This week",
     "addEvent": "+ Add event",
@@ -254,6 +292,10 @@
     "saveEventMembers": "The event was saved, but not who's taking part",
     "deleteEvent": "Couldn't delete the event",
     "skipDate": "Couldn't skip that date",
-    "saveSettings": "Couldn't save the settings"
+    "saveSettings": "Couldn't save the settings",
+    "loadChores": "Couldn't load chores",
+    "updateChore": "Couldn't update the chore",
+    "saveChore": "Couldn't save the chore",
+    "deleteChore": "Couldn't delete the chore"
   }
 }

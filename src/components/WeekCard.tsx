@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EventForm from "./EventForm.tsx";
 import MemberAvatar from "./MemberAvatar.tsx";
 import type { FamilyMember } from "../lib/familyMembers.ts";
 import { useEvents, type EventOccurrence, type FamilyEvent, type FamilyEventInput } from "../lib/events.ts";
-import { addDays, dayLabel, formatTime, startOfDay, toDateInput } from "../lib/dates.ts";
+import { addDays, dayLabel, formatTime, toDateInput } from "../lib/dates.ts";
 import i18n from "../i18n/index.ts";
 import { describeRepeat } from "../lib/recurrence.ts";
+import { useToday } from "../lib/display.ts";
 import { useIsFamilyAdmin } from "../lib/kiosk.ts";
 import { useTranslation } from "react-i18next";
 
@@ -138,19 +139,6 @@ function timeLabel({ event, startsAt, endsAt }: EventOccurrence) {
   }
   const start = formatTime(startsAt)
   return endsAt ? `${start}–${formatTime(endsAt)}` : start
-}
-
-// Start of today, kept current: the kiosk screen stays on overnight, so "Today" must move at midnight.
-function useToday() {
-  const [today, setToday] = useState(() => startOfDay(new Date()))
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = startOfDay(new Date())
-      setToday((current) => (current.getTime() === now.getTime() ? current : now))
-    }, 60_000)
-    return () => clearInterval(timer)
-  }, [])
-  return today
 }
 
 export default WeekCard

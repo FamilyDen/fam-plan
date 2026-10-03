@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import i18n, { weekdaysInOrder } from "../i18n/index.ts";
 import { toDateInput, weekdayName } from "../lib/dates.ts";
 import { ALL_DAYS, describeRepeat, isLastWeekOfMonth, NO_REPEAT, weekOfMonth, weeklyPreset, WORKWEEK, type RepeatRule } from "../lib/recurrence.ts";
@@ -65,7 +65,8 @@ function valueOf(rule: RepeatRule) {
 type RepeatPickerProps = {
   day: Date // the event's first day
   value: RepeatRule
-  onChange: (rule: RepeatRule) => void
+  // Accepts a new rule or an update of the latest one (like a useState setter).
+  onChange: Dispatch<SetStateAction<RepeatRule>>
 }
 
 function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
@@ -85,10 +86,13 @@ function RepeatPicker({ day, value, onChange }: RepeatPickerProps) {
     onChange(options.find((o) => o.value === optionValue)!.rule(value))
   }
 
+  // Built on the latest rule, so quick taps in a row all count.
   function toggleWeekday(weekday: number) {
-    const current = value.repeat_weekdays ?? []
-    const next = current.includes(weekday) ? current.filter((d) => d !== weekday) : [...current, weekday]
-    onChange({ ...value, repeat_weekdays: next })
+    onChange((latest) => {
+      const current = latest.repeat_weekdays ?? []
+      const next = current.includes(weekday) ? current.filter((d) => d !== weekday) : [...current, weekday]
+      return { ...latest, repeat_weekdays: next }
+    })
   }
 
   return (

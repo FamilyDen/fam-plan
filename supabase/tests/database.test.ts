@@ -20,8 +20,10 @@ describe("schema", () => {
 
   it("sends live updates for every app table", async () => {
     const { rows } = await db.query<{ tablename: string }>("select tablename from pg_publication_tables where pubname = 'supabase_realtime' order by 1")
-    expect(rows.map((r) => r.tablename)).toEqual(
-      ["event_members", "event_skips", "events", "family_members", "family_settings", "todo_members", "todos"])
+    expect(rows.map((r) => r.tablename)).toEqual([
+      "chore_completions", "chore_members", "chores", "event_members", "event_skips", "events", "family_members",
+      "family_settings", "todo_members", "todos",
+    ])
   })
 
   it("no longer has todos.assigned_to", async () => {
@@ -157,6 +159,66 @@ describe("family_settings", () => {
   it("are separate per family", async () => {
     expect(await as(db, parentB, "select family_id from family_settings")).toHaveLength(0)
     expect(await as(db, parentB, upsert, [true, "22:00", "06:00"])).toHaveLength(1)
+  })
+})
+
+describe("chores, chore_members and chore_completions", () => {
+  let chore: string
+
+  beforeAll(async () => {
+    chore = (await as<{ id: string }>(db, parentA,
+      "insert into chores (title, stars, weekdays) values ('Feed the cat', 2, '{0,1,2,3,4,5,6}') returning id"))[0].id
+    await as(db, parentA, "insert into chore_members values ($1, $2)", [chore, kid])
+  })
+
+  it("can be set up by parents only", async () => {
+    await expect(as(db, screenA, "insert into chores (title, weekdays) values ('x', '{1}')")).rejects.toThrow(RLS_VIOLATION)
+    expect(await as(db, screenA, "update chores set title = 'x' returning id")).toHaveLength(0)
+    expect(await as(db, screenA, "delete from chores returning id")).toHaveLength(0)
+    await expect(as(db, screenA, "insert into chore_members values ($1, $2)", [chore, kid])).rejects.toThrow(RLS_VIOLATION)
+    expect(await as(db, screenA, "delete from chore_members returning chore_id")).toHaveLength(0)
+  })
+
+  it("reject invalid chores", async () => {
+    await expect(as(db, parentA, "insert into chores (title, weekdays) values ('x', '{}')")).rejects.toThrow(/weekdays/)
+    await expect(as(db, parentA, "insert into chores (title, weekdays) values ('x', '{7}')")).rejects.toThrow(/weekdays/)
+    await expect(as(db, parentA, "insert into chores (title, stars, weekdays) values ('x', 4, '{1}')")).rejects.toThrow(/stars/)
+  })
+
+  it("can be ticked off and undone by the family screen", async () => {
+    const tick = "insert into chore_completions (chore_id, member_id, done_on, stars) values ($1, $2, '2026-10-05', $3) returning stars"
+    expect(await as(db, screenA, tick, [chore, kid, 2])).toEqual([{ stars: 2 }])
+    expect(await as(db, screenA, "delete from chore_completions where chore_id = $1 returning done_on", [chore])).toHaveLength(1)
+    expect(await as(db, screenA, tick, [chore, kid, 2])).toHaveLength(1)
+  })
+
+  it("can't claim more stars than the chore gives, or tick for someone not assigned", async () => {
+    await expect(as(db, screenA, "insert into chore_completions (chore_id, member_id, done_on, stars) values ($1, $2, '2026-10-06', 3)", [chore, kid]))
+        .rejects.toThrow(RLS_VIOLATION)
+    const other = (await as<{ id: string }>(db, parentA, "insert into family_members (name) values ('Oskar') returning id"))[0].id
+    await expect(as(db, screenA, "insert into chore_completions (chore_id, member_id, done_on, stars) values ($1, $2, '2026-10-06', 2)", [chore, other]))
+        .rejects.toThrow(/foreign key/)
+  })
+
+  it("are invisible to other families", async () => {
+    expect(await as(db, parentB, "select id from chores")).toHaveLength(0)
+    expect(await as(db, parentB, "select chore_id from chore_members")).toHaveLength(0)
+    expect(await as(db, parentB, "select chore_id from chore_completions")).toHaveLength(0)
+    await expect(as(db, parentB, "insert into chore_completions (chore_id, member_id, done_on, stars) values ($1, $2, '2026-10-07', 2)", [chore, kid]))
+        .rejects.toThrow(RLS_VIOLATION)
+  })
+
+  it("lets parents set a weekly star goal and reward per member", async () => {
+    expect(await as(db, parentA, "update family_members set weekly_star_goal = 20, weekly_reward = 'Movie night pick' where id = $1 returning weekly_star_goal", [kid]))
+        .toEqual([{ weekly_star_goal: 20 }])
+    expect(await as(db, screenA, "update family_members set weekly_star_goal = 1 returning id")).toHaveLength(0)
+  })
+
+  it("drop completions when a child is unassigned or the chore is deleted", async () => {
+    await as(db, parentA, "delete from chore_members where chore_id = $1 and member_id = $2", [chore, kid])
+    const { rows } = await db.query("select 1 from chore_completions where chore_id = $1", [chore])
+    expect(rows).toHaveLength(0)
+    await as(db, parentA, "delete from chores where id = $1", [chore])
   })
 })
 
