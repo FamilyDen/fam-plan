@@ -44,6 +44,14 @@ The app is available in **English** and **Danish** (i18next; texts in `src/i18n/
   Clerk translation in `CLERK_LOCALIZATIONS` (`src/components/AppProviders.tsx`), if Clerk has one.
   `src/i18n/translations.test.ts` fails if a text or a plural form is missing.
 
+## Privacy and data (GDPR)
+
+- **Family data** page (avatar menu, parents only):
+  - **Download** gives one JSON file with the family's accounts (from Clerk) and all of its data (`export_family_data()`)
+  - **Delete family** removes all of the family's data (`delete_family_data()`), then its family screen account and the family itself in Clerk (`api/family-delete.ts`)
+- **Automatic clean-up:** `cleanup_old_data()` removes chore ticks and finished to-dos older than 12 months. It runs nightly with Supabase's scheduler (pg_cron), which the migration sets up if it's available; otherwise enable **Cron** in the Supabase dashboard and run the migration's last block again.
+- Data processors: Clerk (accounts), Supabase (family data), Vercel (hosting). There's no analytics or tracking, and the only cookies are Clerk's sign-in cookies.
+
 ## Getting started
 
 ```bash

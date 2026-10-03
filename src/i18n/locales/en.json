@@ -39,7 +39,8 @@
     "createFamily": "Create a family",
     "language": "Language",
     "manageAccount": "Manage account",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "familyData": "Family data"
   },
   "language": {
     "yours": "Your language",
@@ -128,6 +129,33 @@
     "reward": "Reward",
     "rewardPlaceholder": "Reward, e.g. pick the movie",
     "goalInvalid": "The star goal must be a whole number from 1 to 500"
+  },
+  "familyData": {
+    "title": "Family data",
+    "subtitle": "Your family's data in FamPlan: download a copy, or delete {{family}}.",
+    "download": {
+      "title": "Download family data",
+      "text": "Everything FamPlan stores about your family, as one file: members, events, to-dos, chores, stars and settings.",
+      "button": "Download",
+      "preparing": "Preparing…",
+      "failed": "Couldn't prepare the download. Try again."
+    },
+    "cleanup": {
+      "title": "Automatic clean-up",
+      "text": "Chore ticks and finished to-dos are deleted automatically after 12 months."
+    },
+    "delete": {
+      "title": "Delete family",
+      "text": "This permanently deletes {{family}} for everyone. It can't be undone.",
+      "what1": "All members, events, to-dos, chores and stars",
+      "what2": "The family screen and its settings",
+      "what3": "Everyone's membership of the family (parents keep their own accounts)",
+      "tip": "Tip: download the family data first if you want to keep a copy.",
+      "confirmLabel": "Type \"{{family}}\" to confirm",
+      "button": "Delete family permanently",
+      "deleting": "Deleting…",
+      "failed": "Couldn't finish deleting the family. Try again; it continues where it stopped."
+    }
   },
   "week": {
     "title": "This week",

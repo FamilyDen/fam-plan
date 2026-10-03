@@ -99,6 +99,7 @@ function SettingsMenu() {
                           <MenuItem icon="userPlus" onSelect={() => run(() => clerk.openOrganizationProfile())}>
                               {t("menu.parentsInvites")}
                           </MenuItem>
+                          <MenuItem icon="shield" onSelect={() => run(() => navigate("/family-data"))}>{t("menu.familyData")}</MenuItem>
                       </MenuSection>
                   )}
 
