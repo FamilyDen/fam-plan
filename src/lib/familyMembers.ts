@@ -12,10 +12,13 @@ export type FamilyMember = {
   role: FamilyRole
   color: string | null
   clerk_user_id: string | null
+  weekly_star_goal: number | null // chores: stars to collect each week (null = no goal)
+  weekly_reward: string | null // what reaching the goal earns, e.g. "Movie night pick"
   created_at: string
 }
 
 export type FamilyMemberInput = Pick<FamilyMember, "name" | "role" | "color">
+    & Partial<Pick<FamilyMember, "weekly_star_goal" | "weekly_reward">>
 
 // Colors to tell family members apart at a glance on the shared screen.
 export const MEMBER_COLORS = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#3b82f6", "#8b5cf6", "#ec4899"]
@@ -43,7 +46,7 @@ export function useFamilyMembers() {
     }
     const { data, error } = await supabase
         .from("family_members")
-        .select("id, name, role, color, clerk_user_id, created_at")
+        .select("id, name, role, color, clerk_user_id, weekly_star_goal, weekly_reward, created_at")
         .order("role", { ascending: false }) // parents first
         .order("created_at")
     if (error) {

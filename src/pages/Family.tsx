@@ -84,7 +84,7 @@ function Family() {
                         {isFamilyAdmin && (expanded === `new:${role}` ? (
                             <MemberEditor
                                 // Start with a color nobody in the family uses yet.
-                                initial={{ name: "", role, color: MEMBER_COLORS.find((c) => !members.some((m) => m.color === c)) ?? MEMBER_COLORS[0] }}
+                                initial={{ name: "", role, color: MEMBER_COLORS.find((c) => !members.some((m) => m.color === c)) ?? MEMBER_COLORS[0], weekly_star_goal: null, weekly_reward: null }}
                                 isNew
                                 onSave={add}
                                 onClose={() => setExpanded(null)}

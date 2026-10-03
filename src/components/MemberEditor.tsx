@@ -20,6 +20,8 @@ function MemberEditor({ initial, isNew, onSave, onRemove, onClose }: MemberEdito
   const [name, setName] = useState(initial.name)
   const [role, setRole] = useState<FamilyRole>(initial.role)
   const [color, setColor] = useState(initial.color ?? MEMBER_COLORS[0])
+  const [goal, setGoal] = useState(initial.weekly_star_goal ? String(initial.weekly_star_goal) : "")
+  const [reward, setReward] = useState(initial.weekly_reward ?? "")
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,8 +31,19 @@ function MemberEditor({ initial, isNew, onSave, onRemove, onClose }: MemberEdito
       setError(t("members.enterName"))
       return
     }
+    const goalNumber = goal.trim() ? Number(goal) : null
+    if (goalNumber !== null && (!Number.isInteger(goalNumber) || goalNumber < 1 || goalNumber > 500)) {
+      setError(t("chores.goalInvalid"))
+      return
+    }
     setSaving(true)
-    const failure = await onSave({ name: name.trim(), role, color })
+    const failure = await onSave({
+      name: name.trim(),
+      role,
+      color,
+      weekly_star_goal: goalNumber,
+      weekly_reward: goalNumber && reward.trim() ? reward.trim() : null,
+    })
     setSaving(false)
     if (failure) {
       setError(failure)
@@ -99,6 +112,30 @@ function MemberEditor({ initial, isNew, onSave, onRemove, onClose }: MemberEdito
                           onClick={() => setColor(c)}
                       />
                   ))}
+              </div>
+
+              <span className="field-label">{t("chores.goal")}</span>
+              <div className="field-row goal-row">
+                  <input
+                      type="number"
+                      inputMode="numeric"
+                      min={1}
+                      max={500}
+                      value={goal}
+                      onChange={(e) => { setGoal(e.target.value); setError(null) }}
+                      placeholder="–"
+                      aria-label={t("chores.goalLabel")}
+                  />
+                  <span className="muted">{t("chores.starsPerWeek")}</span>
+                  {goal.trim() && (
+                      <input
+                          value={reward}
+                          onChange={(e) => setReward(e.target.value)}
+                          placeholder={t("chores.rewardPlaceholder")}
+                          aria-label={t("chores.reward")}
+                          maxLength={80}
+                      />
+                  )}
               </div>
           </div>
 
