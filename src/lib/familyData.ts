@@ -52,7 +52,7 @@ export function useFamilyData() {
   }, [supabase, organization, user])
 
   // Permanently deletes the family: its data in Supabase first, then the family screen account and the
-  // family itself in Clerk. Returns true when done.
+  // family itself in Clerk, then switches to another of your families (if any). Returns true when done.
   const deleteFamily = useCallback(async () => {
     if (!supabase) {
       return false
@@ -62,14 +62,19 @@ export function useFamilyData() {
       console.error(error)
       return false
     }
+    const deletedId = organization?.id
     const response = await api("/api/family-delete", { method: "POST" })
     if (!response.ok) {
       console.error("Deleting the family in Clerk failed", response.status)
       return false
     }
-    await clerk.setActive({ organization: null })
+    // Clerk still has the deleted family cached in this browser: refresh the account, then continue in
+    // another family you belong to, or without a family (the dashboard then offers to create one).
+    const fresh = await user?.reload()
+    const next = fresh?.organizationMemberships.find((m) => m.organization.id !== deletedId)
+    await clerk.setActive({ organization: next?.organization.id ?? null })
     return true
-  }, [supabase, api, clerk])
+  }, [supabase, api, clerk, user, organization])
 
   return { download, deleteFamily }
 }

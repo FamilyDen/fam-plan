@@ -60,7 +60,13 @@ function SettingsMenu() {
               aria-label={t("menu.open")}
               aria-haspopup="menu"
               aria-expanded={open}
-              onClick={() => setOpen((o) => !o)}
+              onClick={() => {
+                if (!open) {
+                  // The family list is cached; refresh it so created or deleted families show up correctly.
+                  userMemberships?.revalidate?.()
+                }
+                setOpen(!open)
+              }}
           >
               {user?.imageUrl
                   ? <img className="settings-menu-avatar" src={user.imageUrl} alt="" />
