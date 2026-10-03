@@ -39,7 +39,8 @@
     "createFamily": "Opret en familie",
     "language": "Sprog",
     "manageAccount": "Administrer konto",
-    "signOut": "Log ud"
+    "signOut": "Log ud",
+    "familyData": "Familiens data"
   },
   "language": {
     "yours": "Dit sprog",
@@ -128,6 +129,33 @@
     "reward": "Belønning",
     "rewardPlaceholder": "Belønning, fx vælge filmen",
     "goalInvalid": "Stjernemålet skal være et helt tal fra 1 til 500"
+  },
+  "familyData": {
+    "title": "Familiens data",
+    "subtitle": "Jeres families data i FamPlan: hent en kopi, eller slet {{family}}.",
+    "download": {
+      "title": "Hent familiens data",
+      "text": "Alt, hvad FamPlan gemmer om jeres familie, samlet i én fil: medlemmer, aftaler, opgaver, pligter, stjerner og indstillinger.",
+      "button": "Hent",
+      "preparing": "Forbereder…",
+      "failed": "Kunne ikke forberede filen. Prøv igen."
+    },
+    "cleanup": {
+      "title": "Automatisk oprydning",
+      "text": "Afkrydsede pligter og færdige opgaver slettes automatisk efter 12 måneder."
+    },
+    "delete": {
+      "title": "Slet familie",
+      "text": "Dette sletter {{family}} permanent for alle. Det kan ikke fortrydes.",
+      "what1": "Alle medlemmer, aftaler, opgaver, pligter og stjerner",
+      "what2": "Familieskærmen og dens indstillinger",
+      "what3": "Alles medlemskab af familien (forældrene beholder deres egne konti)",
+      "tip": "Tip: hent familiens data først, hvis du vil gemme en kopi.",
+      "confirmLabel": "Skriv \"{{family}}\" for at bekræfte",
+      "button": "Slet familien permanent",
+      "deleting": "Sletter…",
+      "failed": "Kunne ikke gøre sletningen af familien færdig. Prøv igen; den fortsætter, hvor den stoppede."
+    }
   },
   "week": {
     "title": "Denne uge",
