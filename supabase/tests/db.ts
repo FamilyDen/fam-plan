@@ -9,14 +9,15 @@ const MIGRATIONS_DIR = join(import.meta.dirname, "..", "migrations")
 
 export const migrationFiles = readdirSync(MIGRATIONS_DIR).filter((f) => f.endsWith(".sql")).sort()
 
-// What Supabase provides: auth.jwt() (read from a setting we control), the authenticated role with
-// table grants, and the supabase_realtime publication.
+// What Supabase provides: auth.jwt() (read from a setting we control), the authenticated and anon roles
+// (with table grants for authenticated), and the supabase_realtime publication.
 const SUPABASE_STAND_IN = `
   create schema auth;
   create function auth.jwt() returns jsonb language sql stable as $$
     select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb
   $$;
   create role authenticated nologin;
+  create role anon nologin;
   grant usage on schema public, auth to authenticated;
   grant execute on function auth.jwt() to authenticated;
   alter default privileges in schema public grant all on tables to authenticated;

@@ -1922,3 +1922,65 @@ button.week-event:not(:disabled):hover {
 .repeat-picker .segmented {
   align-self: flex-start;
 }
+
+/* ---- Family data (GDPR) ---- */
+
+.family-data-page .panel {
+  margin-top: 1.25rem;
+}
+
+.family-data-page .settings-row-main > button {
+  flex-shrink: 0;
+}
+
+.danger-zone {
+  border-color: rgba(255, 107, 107, 0.45);
+}
+
+.danger-zone h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  color: #ff6b6b;
+}
+
+.danger-zone p,
+.danger-zone ul {
+  margin: 0 0 0.75rem;
+}
+
+.danger-zone ul {
+  padding-left: 1.2rem;
+  line-height: 1.6;
+}
+
+.danger-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 24rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.danger-confirm input {
+  padding: 0.6em 0.8em;
+  font-size: 1em;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+}
+
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #dc2626;
+  color: #fff;
+}
+
+.danger-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
